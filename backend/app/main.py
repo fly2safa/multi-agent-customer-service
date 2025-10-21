@@ -32,11 +32,19 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check."""
+    """Detailed health check with LLM provider validation."""
+    from app.llm_providers import validate_llm_configuration
+    
+    llm_status = validate_llm_configuration()
+    
     return {
         "status": "ok",
         "openai_configured": bool(settings.OPENAI_API_KEY),
         "aws_configured": bool(settings.AWS_ACCESS_KEY_ID and settings.AWS_SECRET_ACCESS_KEY),
+        "llm_providers": {
+            "openai": llm_status["openai"]["configured"],
+            "bedrock": llm_status["bedrock"]["configured"]
+        }
     }
 
 

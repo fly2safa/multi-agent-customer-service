@@ -94,6 +94,21 @@ This script will:
 
 **Expected output:** You should see confirmation that documents were loaded and embedded for all three categories.
 
+### 5. Test LLM Configuration (Optional but Recommended)
+
+Before starting the application, test that your LLM providers are properly configured:
+
+```bash
+cd backend
+python test_llm_setup.py
+```
+
+This will verify:
+- Environment variables are set correctly
+- OpenAI API key is valid
+- AWS Bedrock credentials work
+- ChromaDB collections exist
+
 ## Running the Application
 
 ### Start Backend Server
