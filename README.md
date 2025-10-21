@@ -46,18 +46,29 @@ cd backend
 python -m venv venv
 
 # Activate virtual environment
-# On Windows:
-venv\Scripts\activate
+# On Windows (PowerShell):
+venv\Scripts\Activate.ps1
+# On Windows (Command Prompt):
+venv\Scripts\activate.bat
 # On macOS/Linux:
 source venv/bin/activate
+
+# Upgrade pip
+python -m pip install --upgrade pip
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Configure environment variables
 cp env.example .env
-# Edit .env with your API keys
+# Edit .env with your actual API keys:
+# - OPENAI_API_KEY
+# - AWS_ACCESS_KEY_ID
+# - AWS_SECRET_ACCESS_KEY
+# - AWS_REGION
 ```
+
+**Important:** Keep the virtual environment activated for all subsequent backend commands!
 
 ### 3. Frontend Setup
 
@@ -94,49 +105,202 @@ This script will:
 
 **Expected output:** You should see confirmation that documents were loaded and embedded for all three categories.
 
-### 5. Test LLM Configuration (Optional but Recommended)
+**Troubleshooting:**
+- If you get OpenAI errors, verify your `OPENAI_API_KEY` in `.env`
+- The script creates a `chroma_db/` directory in the backend folder
 
-Before starting the application, test that your LLM providers are properly configured:
+---
+
+## Testing the System
+
+### Step-by-Step Testing Guide
+
+#### Test 1: Verify LLM Configuration
 
 ```bash
-cd backend
+# In backend/ directory with venv activated
 python test_llm_setup.py
 ```
 
-This will verify:
-- Environment variables are set correctly
-- OpenAI API key is valid
-- AWS Bedrock credentials work
-- ChromaDB collections exist
+**Expected Result:**
+- ✓ OpenAI configured successfully
+- ✓ Bedrock configured successfully
+- ✓ All 3 ChromaDB collections found
 
-### 6. Test Agents (Optional)
+**If this fails:**
+- Check your API keys in `backend/.env`
+- Ensure you've run `ingest_data.py`
+- For AWS Bedrock, verify your region supports Claude models
 
-Test the three specialized agents independently:
+---
+
+#### Test 2: Test Individual Agents
 
 ```bash
-cd backend
+# In backend/ directory with venv activated
 python test_agents.py
 ```
 
-This validates:
-- **Billing Agent** (Hybrid RAG/CAG): First query uses RAG, subsequent queries use cache
-- **Technical Agent** (Pure RAG): Every query performs vector search
-- **Policy Agent** (Pure CAG): All policy documents loaded in memory
+**Expected Result:**
+- ✓ Billing Agent works (shows Hybrid RAG/CAG strategy)
+- ✓ Technical Agent works (shows Pure RAG with sources)
+- ✓ Policy Agent works (shows Pure CAG with all docs loaded)
+- ✓ Streaming responses work
 
-### 7. Test Orchestrator (Optional)
+**This validates:** Each agent's retrieval strategy is working correctly.
 
-Test the LangGraph orchestrator's routing intelligence:
+---
+
+#### Test 3: Test Orchestrator Routing
 
 ```bash
-cd backend
+# In backend/ directory with venv activated
 python test_orchestrator.py
 ```
 
-This validates:
-- Intelligent routing to correct agents based on query intent
-- Full workflow from query to response
-- Streaming response capability
-- Conversation context maintenance
+**Expected Result:**
+- ✓ 80%+ routing accuracy across 15 test queries
+- ✓ Full workflow completes
+- ✓ Streaming works
+- ✓ Conversation context maintained
+
+**This validates:** The orchestrator correctly routes queries to appropriate agents.
+
+---
+
+#### Test 4: Start Backend Server
+
+```bash
+# In backend/ directory with venv activated
+python -m app.main
+```
+
+**Expected Output:**
+```
+INFO:     Started server process
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000
+```
+
+**Keep this terminal running!**
+
+---
+
+#### Test 5: Test API Endpoints
+
+Open a **new terminal**, activate the virtual environment again, and run:
+
+```bash
+# New terminal
+cd backend
+venv\Scripts\activate  # Windows
+# or: source venv/bin/activate  # macOS/Linux
+
+python test_api.py
+```
+
+**Expected Result:**
+- ✓ Health check passes
+- ✓ Non-streaming chat works
+- ✓ Streaming chat works
+- ✓ Session management works
+- ✓ Routing test endpoint works
+
+**This validates:** The FastAPI server is working correctly.
+
+---
+
+#### Test 6: Start Frontend
+
+Open another **new terminal**:
+
+```bash
+cd frontend
+
+# Install dependencies (first time only)
+npm install
+
+# Create environment file
+cp env.example .env.local
+
+# Start development server
+npm run dev
+```
+
+**Expected Output:**
+```
+- ready started server on 0.0.0.0:3000
+- Local:        http://localhost:3000
+```
+
+---
+
+#### Test 7: End-to-End Browser Test
+
+1. **Open browser**: Navigate to `http://localhost:3000`
+
+2. **Test Billing Agent**:
+   - Type: "What are your pricing plans?"
+   - Watch the streaming response
+   - Follow up: "What's in the Enterprise plan?" (should use cached context)
+
+3. **Test Technical Agent**:
+   - Type: "How do I reset my password?"
+   - Verify you get step-by-step instructions
+   - Note: Each query performs new retrieval (Pure RAG)
+
+4. **Test Policy Agent**:
+   - Type: "What's your privacy policy?"
+   - Verify instant response (documents loaded in memory)
+   - Follow up: "Are you GDPR compliant?"
+
+5. **Test Streaming**:
+   - Observe responses appearing word-by-word in real-time
+   - Verify smooth, natural streaming experience
+
+6. **Test Session Persistence**:
+   - Refresh the page
+   - Conversation history should persist
+
+7. **Test Clear Chat**:
+   - Click "Clear Chat" button
+   - Verify conversation resets
+
+---
+
+## Quick Testing Commands Summary
+
+```bash
+# Terminal 1 - Backend Setup & Testing
+cd backend
+python -m venv venv
+venv\Scripts\activate  # Windows
+# or: source venv/bin/activate  # macOS/Linux
+pip install -r requirements.txt
+cp env.example .env  # Edit with your API keys
+python ingest_data.py
+python test_llm_setup.py
+python test_agents.py
+python test_orchestrator.py
+python -m app.main  # Keep running
+
+# Terminal 2 - API Testing (optional)
+cd backend
+venv\Scripts\activate
+python test_api.py
+
+# Terminal 3 - Frontend
+cd frontend
+npm install
+cp env.example .env.local
+npm run dev
+
+# Browser
+# Open http://localhost:3000
+```
+
+**📖 For detailed step-by-step testing instructions with expected outputs, see [TESTING_GUIDE.md](TESTING_GUIDE.md)**
 
 ## Running the Application
 
