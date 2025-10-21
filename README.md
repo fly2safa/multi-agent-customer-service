@@ -109,6 +109,20 @@ This will verify:
 - AWS Bedrock credentials work
 - ChromaDB collections exist
 
+### 6. Test Agents (Optional)
+
+Test the three specialized agents independently:
+
+```bash
+cd backend
+python test_agents.py
+```
+
+This validates:
+- **Billing Agent** (Hybrid RAG/CAG): First query uses RAG, subsequent queries use cache
+- **Technical Agent** (Pure RAG): Every query performs vector search
+- **Policy Agent** (Pure CAG): All policy documents loaded in memory
+
 ## Running the Application
 
 ### Start Backend Server
