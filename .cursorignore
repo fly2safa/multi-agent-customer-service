@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+venv/
+env/
+
+# Build outputs
+.next/
+dist/
+build/
+
+# Databases
+chroma_db/
+*.db
+
+# Large files
+*.log
+*.csv
+*.json.gz
+
+# Temporary files
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Environment files (don't index sensitive data)
+.env
+.env.local
+.env.*.local
+
