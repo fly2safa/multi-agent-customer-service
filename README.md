@@ -74,12 +74,25 @@ cp env.example .env.local
 
 ### 4. Data Ingestion
 
+Before running the application, you need to ingest the mock documents into ChromaDB:
+
 ```bash
 cd backend
+
+# Make sure your virtual environment is activated and .env is configured
 python ingest_data.py
 ```
 
-This will process mock documents and create vector embeddings in ChromaDB.
+This script will:
+- Load documents from `data/mock_documents/`
+- Split them into chunks
+- Generate embeddings using OpenAI
+- Store them in ChromaDB collections:
+  - `billing_docs`: For the Billing Support Agent
+  - `technical_docs`: For the Technical Support Agent
+  - `policy_docs`: For the Policy & Compliance Agent
+
+**Expected output:** You should see confirmation that documents were loaded and embedded for all three categories.
 
 ## Running the Application
 
