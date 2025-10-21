@@ -144,19 +144,59 @@ This validates:
 
 ```bash
 cd backend
+
+# Make sure virtual environment is activated
 python -m app.main
 ```
 
 The API will be available at `http://localhost:8000`
 
+**API Endpoints:**
+- `GET /` - Health check
+- `GET /health` - Detailed health with LLM status
+- `POST /api/chat` - Main chat endpoint (supports streaming)
+- `GET /api/chat/sessions/{session_id}` - Get session info
+- `DELETE /api/chat/sessions/{session_id}` - Delete session
+- `GET /api/chat/sessions` - List all sessions
+- `POST /api/chat/test` - Test routing without executing
+
+**Test the API:**
+```bash
+# In another terminal
+cd backend
+python test_api.py
+```
+
 ### Start Frontend Development Server
 
 ```bash
 cd frontend
+
+# Create .env.local from example
+cp env.example .env.local
+
+# Start development server
 npm run dev
 ```
 
 The application will be available at `http://localhost:3000`
+
+## Testing the Complete System
+
+### End-to-End Test
+
+1. **Start Backend**: `cd backend && python -m app.main`
+2. **Start Frontend**: `cd frontend && npm run dev`
+3. **Open Browser**: Navigate to `http://localhost:3000`
+4. **Test Queries**: Try example queries from `EXAMPLE_QUERIES.md`
+
+### Verify Each Agent
+
+- **Billing Agent**: "What are your pricing plans?"
+- **Technical Agent**: "How do I reset my password?"
+- **Policy Agent**: "What's your privacy policy?"
+
+Watch the streaming responses and observe which agent handles each query!
 
 ## Environment Variables
 
@@ -178,17 +218,21 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 
 ## Example Queries
 
-### Billing Agent
+See `EXAMPLE_QUERIES.md` for a comprehensive list of test queries for each agent.
+
+### Quick Examples
+
+#### Billing Agent (Hybrid RAG/CAG)
 - "What's the pricing for the enterprise plan?"
 - "How can I view my invoices?"
 - "What payment methods do you accept?"
 
-### Technical Support Agent
+#### Technical Support Agent (Pure RAG)
 - "How do I reset my password?"
 - "My API authentication is failing"
 - "How to integrate the webhook system?"
 
-### Policy & Compliance Agent
+#### Policy & Compliance Agent (Pure CAG)
 - "What's your data retention policy?"
 - "Do you comply with GDPR?"
 - "What are the terms of service?"
@@ -223,9 +267,100 @@ agent-proj2/
 - **AI/LLM**: OpenAI GPT-4, AWS Bedrock Claude 3.5
 - **Database**: ChromaDB (vector database)
 
+## Architecture Highlights
+
+### Multi-Agent System
+- **Orchestrator**: Uses Bedrock Claude 3.5 Haiku for fast, cost-effective routing
+- **Worker Agents**: Use OpenAI GPT-4 for high-quality responses
+
+### Retrieval Strategies
+1. **Billing Agent** - Hybrid RAG/CAG
+   - First query: RAG retrieval from ChromaDB
+   - Subsequent queries: Uses cached context (CAG) for speed
+   
+2. **Technical Agent** - Pure RAG
+   - Every query performs fresh vector similarity search
+   - Best for dynamic, frequently updated content
+   
+3. **Policy Agent** - Pure CAG
+   - All documents loaded in memory at startup
+   - Instant responses with no retrieval overhead
+
+### Key Features
+- **Streaming Responses**: Real-time SSE streaming for better UX
+- **Session Management**: Maintains conversation context
+- **Intelligent Routing**: LLM-powered query classification
+- **Source Citations**: Technical agent provides document sources
+- **Error Handling**: Graceful fallbacks and retry mechanisms
+
+## Troubleshooting
+
+### Backend Issues
+
+**ChromaDB not found:**
+```bash
+cd backend
+python ingest_data.py
+```
+
+**LLM Provider errors:**
+```bash
+python test_llm_setup.py  # Verify credentials
+```
+
+**Port already in use:**
+```bash
+# Change PORT in backend/.env
+PORT=8001
+```
+
+### Frontend Issues
+
+**Cannot connect to backend:**
+- Ensure backend is running on port 8000
+- Check `NEXT_PUBLIC_API_URL` in `frontend/.env.local`
+
+**Dependencies not found:**
+```bash
+cd frontend
+npm install
+```
+
 ## Development
 
 This project follows the Vibe Coding Strategy - a natural language-driven, iterative development approach guided by AI tools.
+
+## Project Structure
+
+```
+agent-proj2/
+├── backend/
+│   ├── app/
+│   │   ├── agents/          # Specialized AI agents
+│   │   ├── graph/           # LangGraph orchestrator
+│   │   ├── routes/          # API endpoints
+│   │   ├── config.py        # Configuration
+│   │   ├── llm_providers.py # LLM factories
+│   │   ├── retrievers.py    # ChromaDB utilities
+│   │   ├── sessions.py      # Session management
+│   │   └── main.py          # FastAPI app
+│   ├── ingest_data.py       # Data ingestion script
+│   ├── test_*.py            # Test scripts
+│   └── requirements.txt     # Python dependencies
+├── frontend/
+│   ├── app/                 # Next.js app directory
+│   ├── components/          # React components
+│   ├── hooks/               # Custom hooks (useChat)
+│   ├── lib/                 # API client & utilities
+│   └── package.json         # Node dependencies
+├── data/
+│   └── mock_documents/      # Knowledge base documents
+│       ├── billing/         # Billing documents
+│       ├── technical/       # Technical docs
+│       └── policy/          # Policy documents
+├── EXAMPLE_QUERIES.md       # Test queries
+└── README.md                # This file
+```
 
 ## License
 
