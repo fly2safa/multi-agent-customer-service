@@ -123,6 +123,21 @@ This validates:
 - **Technical Agent** (Pure RAG): Every query performs vector search
 - **Policy Agent** (Pure CAG): All policy documents loaded in memory
 
+### 7. Test Orchestrator (Optional)
+
+Test the LangGraph orchestrator's routing intelligence:
+
+```bash
+cd backend
+python test_orchestrator.py
+```
+
+This validates:
+- Intelligent routing to correct agents based on query intent
+- Full workflow from query to response
+- Streaming response capability
+- Conversation context maintenance
+
 ## Running the Application
 
 ### Start Backend Server
