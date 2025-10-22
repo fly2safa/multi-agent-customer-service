@@ -182,20 +182,20 @@ def main():
         ]
         
         for name, success in results:
-            status = "✓ PASS" if success else "✗ FAIL"
+            status = "[PASS]" if success else "[FAIL]"
             print(f"{status} - {name}")
         
         all_passed = all(success for _, success in results)
         
         print("\n" + "=" * 70)
         if all_passed:
-            print("✓ ALL TESTS PASSED")
+            print("[SUCCESS] ALL TESTS PASSED")
             print("\nAll three agents are working correctly with their respective strategies:")
             print("  - Billing Agent: Hybrid RAG/CAG (caches after first query)")
             print("  - Technical Agent: Pure RAG (searches every time)")
             print("  - Policy Agent: Pure CAG (all docs in memory)")
         else:
-            print("✗ SOME TESTS FAILED")
+            print("[FAILED] SOME TESTS FAILED")
             print("\nPlease check:")
             print("  1. OpenAI API key is configured")
             print("  2. ChromaDB collections exist (run ingest_data.py)")
@@ -206,7 +206,7 @@ def main():
         return 0 if all_passed else 1
     
     except Exception as e:
-        print(f"\n✗ Error running tests: {e}")
+        print(f"\n[ERROR] Error running tests: {e}")
         import traceback
         traceback.print_exc()
         return 1

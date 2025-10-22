@@ -7,8 +7,8 @@ the most relevant technical documents from the knowledge base.
 """
 
 from typing import Dict, List, Optional
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
@@ -61,7 +61,7 @@ Use the provided context to answer questions accurately."""
             Tuple of (context_string, list_of_documents)
         """
         # Perform RAG query
-        docs = self.retriever.get_relevant_documents(query)
+        docs = self.retriever.invoke(query)
         
         # Format context with source citations
         context_parts = []

@@ -8,7 +8,7 @@ and routes them to the appropriate specialized agent using LangGraph.
 import time
 from typing import Dict, List, Optional, Literal
 from langgraph.graph import StateGraph, END
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 from app.llm_providers import get_orchestrator_llm

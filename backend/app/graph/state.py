@@ -6,7 +6,7 @@ including conversation history, routing decisions, and session data.
 """
 
 from typing import TypedDict, List, Dict, Optional, Annotated
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from operator import add
 
 

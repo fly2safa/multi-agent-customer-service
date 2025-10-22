@@ -7,8 +7,8 @@ in memory for fast, consistent responses without per-query vector searches.
 """
 
 from typing import Dict, List, Optional
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
@@ -101,19 +101,14 @@ Use the provided policy documentation to answer questions accurately."""
         ])
         
         # Create the chain
-        chain = (
-            {
-                "context": lambda x: context,
-                "query": RunnablePassthrough()
-            }
-            | prompt_template
-            | self.llm
-            | StrOutputParser()
-        )
+        chain = prompt_template | self.llm | StrOutputParser()
         
         # Get response
         try:
-            response = chain.invoke(query)
+            response = chain.invoke({
+                "context": context,
+                "query": query
+            })
             
             return {
                 "agent": self.agent_name,
@@ -164,18 +159,14 @@ Use the provided policy documentation to answer questions accurately."""
         ])
         
         # Create streaming chain
-        chain = (
-            {
-                "context": lambda x: context,
-                "query": RunnablePassthrough()
-            }
-            | prompt_template
-            | self.llm
-        )
+        chain = prompt_template | self.llm
         
         # Stream response
         try:
-            async for chunk in chain.astream(query):
+            async for chunk in chain.astream({
+                "context": context,
+                "query": query
+            }):
                 if hasattr(chunk, 'content'):
                     yield chunk.content
                 else:

@@ -7,8 +7,8 @@ for the session (CAG) to speed up subsequent queries.
 """
 
 from typing import Dict, List, Optional
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
@@ -60,7 +60,7 @@ Use the provided context to answer questions accurately."""
         """
         if session_id not in self._session_cache:
             # Perform RAG query to get relevant documents
-            docs = self.retriever.get_relevant_documents(query)
+            docs = self.retriever.invoke(query)
             
             # Cache the context for this session
             context_text = "\n\n".join([
