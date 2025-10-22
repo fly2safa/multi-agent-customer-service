@@ -72,12 +72,18 @@ class LLMProviders:
         model_id = model or settings.BEDROCK_MODEL
         
         # Create boto3 client for Bedrock
-        bedrock_client = boto3.client(
-            service_name='bedrock-runtime',
-            region_name=settings.AWS_REGION,
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
-        )
+        client_kwargs = {
+            'service_name': 'bedrock-runtime',
+            'region_name': settings.AWS_REGION,
+            'aws_access_key_id': settings.AWS_ACCESS_KEY_ID,
+            'aws_secret_access_key': settings.AWS_SECRET_ACCESS_KEY,
+        }
+        
+        # Add session token if available (for temporary credentials)
+        if settings.AWS_SESSION_TOKEN:
+            client_kwargs['aws_session_token'] = settings.AWS_SESSION_TOKEN
+        
+        bedrock_client = boto3.client(**client_kwargs)
         
         return ChatBedrock(
             client=bedrock_client,

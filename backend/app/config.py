@@ -14,6 +14,7 @@ class Settings:
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
     AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
     AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    AWS_SESSION_TOKEN: str = os.getenv("AWS_SESSION_TOKEN", "")  # For temporary credentials (AWS Academy/SSO)
     AWS_REGION: str = os.getenv("AWS_REGION", "us-east-1")
     
     # Database
