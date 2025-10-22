@@ -73,13 +73,13 @@ def test_routing_accuracy():
             
             if routed_correctly:
                 correct_routes += 1
-                status = "✓"
+                status = "[OK]"
             else:
-                status = "✗"
+                status = "[X]"
             
             print(f"{status} Query: \"{query}\"")
-            print(f"  → Routed to: {actual_agent}")
-            print(f"  → Strategy: {result.get('strategy')}")
+            print(f"  -> Routed to: {actual_agent}")
+            print(f"  -> Strategy: {result.get('strategy')}")
             print()
     
     # Calculate accuracy
@@ -140,7 +140,7 @@ def test_full_workflow():
         
         # Check if routed correctly
         passed = expected.lower() in actual_agent.lower()
-        print(f"Result: {'✓ PASS' if passed else '✗ FAIL'}")
+        print(f"Result: {'[PASS]' if passed else '[FAIL]'}")
         
         if not passed:
             all_passed = False
@@ -171,11 +171,11 @@ async def test_streaming():
             print(chunk, end="", flush=True)
         
         print("\n" + "-" * 70)
-        print("✓ Streaming completed successfully")
+        print("[SUCCESS] Streaming completed successfully")
         return True
-    
+        
     except Exception as e:
-        print(f"\n✗ Streaming failed: {e}")
+        print(f"\n[FAILED] Streaming failed: {e}")
         return False
 
 
@@ -235,21 +235,21 @@ def main():
         ]
         
         for name, passed in tests:
-            status = "✓ PASS" if passed else "✗ FAIL"
+            status = "[PASS]" if passed else "[FAIL]"
             print(f"{status} - {name}")
         
         all_passed = all(passed for _, passed in tests)
         
         print("\n" + "=" * 70)
         if all_passed:
-            print("✓ ALL TESTS PASSED")
+            print("[SUCCESS] ALL TESTS PASSED")
             print("\nThe orchestrator is working correctly:")
             print("  - Routes queries to appropriate agents")
             print("  - Handles streaming responses")
             print("  - Maintains conversation context")
             print("  - Uses Bedrock Claude for cost-effective routing")
         else:
-            print("✗ SOME TESTS FAILED")
+            print("[FAILED] SOME TESTS FAILED")
             print("\nPlease check:")
             print("  1. All agents are properly initialized")
             print("  2. LLM providers are configured")
@@ -260,7 +260,7 @@ def main():
         return 0 if all_passed else 1
     
     except Exception as e:
-        print(f"\n✗ Error running tests: {e}")
+        print(f"\n[ERROR] Error running tests: {e}")
         import traceback
         traceback.print_exc()
         return 1

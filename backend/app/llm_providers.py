@@ -8,7 +8,7 @@ from OpenAI and AWS Bedrock.
 import os
 from typing import Optional
 from langchain_openai import ChatOpenAI
-from langchain_community.chat_models import BedrockChat
+from langchain_aws import ChatBedrock
 import boto3
 from app.config import settings
 
@@ -17,7 +17,7 @@ class LLMProviders:
     """Factory class for creating LLM instances."""
     
     _openai_client: Optional[ChatOpenAI] = None
-    _bedrock_client: Optional[BedrockChat] = None
+    _bedrock_client: Optional[ChatBedrock] = None
     
     @classmethod
     def get_openai_llm(
@@ -56,7 +56,7 @@ class LLMProviders:
         model: Optional[str] = None,
         temperature: float = 0.3,
         **kwargs
-    ) -> BedrockChat:
+    ) -> ChatBedrock:
         """
         Get AWS Bedrock LLM instance (Claude 3.5 Haiku).
         Used for fast, cost-effective routing by the orchestrator.
@@ -64,10 +64,10 @@ class LLMProviders:
         Args:
             model: Model ID (defaults to settings.BEDROCK_MODEL)
             temperature: Sampling temperature (0-1 for Claude)
-            **kwargs: Additional arguments for BedrockChat
+            **kwargs: Additional arguments for ChatBedrock
             
         Returns:
-            BedrockChat instance configured for orchestrator
+            ChatBedrock instance configured for orchestrator
         """
         model_id = model or settings.BEDROCK_MODEL
         
@@ -79,7 +79,7 @@ class LLMProviders:
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
         )
         
-        return BedrockChat(
+        return ChatBedrock(
             client=bedrock_client,
             model_id=model_id,
             model_kwargs={
@@ -90,7 +90,7 @@ class LLMProviders:
         )
     
     @classmethod
-    def get_orchestrator_llm(cls) -> BedrockChat:
+    def get_orchestrator_llm(cls) -> ChatBedrock:
         """
         Get LLM specifically configured for the orchestrator.
         Uses Bedrock Claude 3.5 Haiku for fast, cost-effective routing.
@@ -132,12 +132,12 @@ def get_openai_llm(**kwargs) -> ChatOpenAI:
     return LLMProviders.get_openai_llm(**kwargs)
 
 
-def get_bedrock_llm(**kwargs) -> BedrockChat:
+def get_bedrock_llm(**kwargs) -> ChatBedrock:
     """Convenience function to get Bedrock LLM."""
     return LLMProviders.get_bedrock_llm(**kwargs)
 
 
-def get_orchestrator_llm() -> BedrockChat:
+def get_orchestrator_llm() -> ChatBedrock:
     """Convenience function to get orchestrator LLM."""
     return LLMProviders.get_orchestrator_llm()
 
