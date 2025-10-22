@@ -9,6 +9,7 @@ langgraph>=0.2.0
 langchain-openai>=0.2.0
 langchain-community>=0.3.0
 langchain-aws>=0.2.0
+langchain-chroma>=1.0.0
 
 # AWS Bedrock
 boto3>=1.35.0

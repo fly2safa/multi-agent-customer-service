@@ -27,7 +27,9 @@ class PolicyAgent:
     def __init__(self):
         """Initialize the Policy Agent and load all policy documents."""
         self.agent_name = "Policy & Compliance"
-        self.llm = get_worker_llm(streaming=True)
+        # Use GPT-4 Turbo for large context (128K tokens) instead of GPT-4 (8K tokens)
+        # This is necessary for Pure CAG strategy with all policy docs in context
+        self.llm = get_worker_llm(streaming=True, model="gpt-4-turbo-preview")
         
         # Load all policy documents into memory (CAG strategy)
         self._load_policy_context()
@@ -124,6 +126,7 @@ Use the provided policy documentation to answer questions accurately."""
                 "agent": self.agent_name,
                 "response": f"I apologize, but I encountered an error processing your policy question. Please try again or contact our compliance team.",
                 "strategy": "Pure CAG",
+                "documents_in_context": 0,
                 "session_id": session_id,
                 "success": False,
                 "error": str(e)

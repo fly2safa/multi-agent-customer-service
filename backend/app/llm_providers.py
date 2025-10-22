@@ -104,21 +104,25 @@ class LLMProviders:
         )
     
     @classmethod
-    def get_worker_llm(cls, streaming: bool = True) -> ChatOpenAI:
+    def get_worker_llm(cls, streaming: bool = True, model: Optional[str] = None, **kwargs) -> ChatOpenAI:
         """
         Get LLM specifically configured for worker agents.
         Uses OpenAI GPT-4 for high-quality responses.
         
         Args:
             streaming: Enable streaming responses
+            model: Model name (defaults to GPT-4, can use GPT-4 Turbo for larger context)
+            **kwargs: Additional arguments passed to ChatOpenAI
             
         Returns:
             ChatOpenAI instance optimized for customer service responses
         """
         return cls.get_openai_llm(
+            model=model,
             temperature=0.7,  # Balanced creativity and consistency
             streaming=streaming,
-            max_tokens=1500   # Sufficient for detailed responses
+            max_tokens=1500,   # Sufficient for detailed responses
+            **kwargs
         )
 
 
