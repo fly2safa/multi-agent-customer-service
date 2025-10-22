@@ -28,9 +28,9 @@ def test_configuration():
     
     # Check environment variables
     print("\n1. Environment Variables:")
-    print(f"   OPENAI_API_KEY: {'✓ Set' if settings.OPENAI_API_KEY else '✗ Not set'}")
-    print(f"   AWS_ACCESS_KEY_ID: {'✓ Set' if settings.AWS_ACCESS_KEY_ID else '✗ Not set'}")
-    print(f"   AWS_SECRET_ACCESS_KEY: {'✓ Set' if settings.AWS_SECRET_ACCESS_KEY else '✗ Not set'}")
+    print(f"   OPENAI_API_KEY: {'[OK] Set' if settings.OPENAI_API_KEY else '[X] Not set'}")
+    print(f"   AWS_ACCESS_KEY_ID: {'[OK] Set' if settings.AWS_ACCESS_KEY_ID else '[X] Not set'}")
+    print(f"   AWS_SECRET_ACCESS_KEY: {'[OK] Set' if settings.AWS_SECRET_ACCESS_KEY else '[X] Not set'}")
     print(f"   AWS_REGION: {settings.AWS_REGION}")
     
     # Validate LLM providers
@@ -40,9 +40,9 @@ def test_configuration():
     for provider, status in results.items():
         print(f"\n   {provider.upper()}:")
         if status["configured"]:
-            print(f"      ✓ Configured successfully")
+            print(f"      [OK] Configured successfully")
         else:
-            print(f"      ✗ Configuration failed")
+            print(f"      [X] Configuration failed")
             if status["error"]:
                 print(f"      Error: {status['error']}")
     
@@ -53,7 +53,7 @@ def test_configuration():
         collections = manager.list_collections()
         
         if collections:
-            print(f"   ✓ Found {len(collections)} collections:")
+            print(f"   [OK] Found {len(collections)} collections:")
             for collection_name in collections:
                 stats = manager.get_collection_stats(collection_name)
                 if "error" not in stats:
@@ -61,11 +61,11 @@ def test_configuration():
                 else:
                     print(f"      - {collection_name}: Error - {stats['error']}")
         else:
-            print("   ✗ No collections found")
+            print("   [X] No collections found")
             print("   Run 'python ingest_data.py' to create collections")
     
     except Exception as e:
-        print(f"   ✗ Error accessing ChromaDB: {e}")
+        print(f"   [X] Error accessing ChromaDB: {e}")
         print("   Run 'python ingest_data.py' to initialize database")
     
     # Summary
@@ -76,12 +76,12 @@ def test_configuration():
     all_configured = all(r["configured"] for r in results.values())
     
     if all_configured:
-        print("✓ All LLM providers are configured correctly!")
+        print("[OK] All LLM providers are configured correctly!")
         print("\nYou can now:")
         print("  1. Run the data ingestion: python ingest_data.py")
         print("  2. Start the API server: python -m app.main")
     else:
-        print("✗ Some LLM providers are not configured properly")
+        print("[X] Some LLM providers are not configured properly")
         print("\nPlease check:")
         print("  1. Your .env file has the correct API keys")
         print("  2. OpenAI API key is valid")
@@ -110,18 +110,18 @@ def test_simple_query():
     try:
         llm = get_openai_llm(streaming=False, temperature=0.7, max_tokens=100)
         response = llm.invoke("Say 'OpenAI connection successful' in a friendly way.")
-        print(f"   ✓ OpenAI Response: {response.content}")
+        print(f"   [OK] OpenAI Response: {response.content}")
     except Exception as e:
-        print(f"   ✗ OpenAI Error: {e}")
+        print(f"   [X] OpenAI Error: {e}")
     
     # Test Bedrock
     print("\n2. Testing AWS Bedrock (Claude 3.5 Haiku)...")
     try:
         llm = get_bedrock_llm(temperature=0.3, max_tokens=100)
         response = llm.invoke("Say 'Bedrock connection successful' in a friendly way.")
-        print(f"   ✓ Bedrock Response: {response.content}")
+        print(f"   [OK] Bedrock Response: {response.content}")
     except Exception as e:
-        print(f"   ✗ Bedrock Error: {e}")
+        print(f"   [X] Bedrock Error: {e}")
     
     print("\n" + "=" * 70 + "\n")
 

@@ -12,7 +12,7 @@ from typing import List, Dict
 import chromadb
 from chromadb.config import Settings
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 
@@ -217,7 +217,7 @@ class DocumentIngestionPipeline:
             
             print(f"Ingested batch {i//batch_size + 1}: chunks {i} to {batch_end}")
         
-        print(f"✓ Successfully ingested {len(chunks)} chunks for {category}")
+        print(f"[SUCCESS] Successfully ingested {len(chunks)} chunks for {category}")
         return len(chunks)
     
     def run(self) -> None:
@@ -257,7 +257,7 @@ class DocumentIngestionPipeline:
             count = collection.count()
             print(f"  - {collection.name}: {count} documents")
         
-        print(f"\n✓ Pipeline completed successfully!")
+        print(f"\n[SUCCESS] Pipeline completed successfully!")
 
 
 def main():
