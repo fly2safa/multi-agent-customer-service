@@ -21,7 +21,7 @@ export function MessageList({ messages }: MessageListProps) {
 
   if (messages.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="h-full flex items-center justify-center p-8">
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-2">Welcome to AI Customer Service</h2>
           <p className="text-muted-foreground mb-4">
@@ -41,7 +41,7 @@ export function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-visible">
+    <div ref={scrollRef} className="h-full overflow-y-auto scrollbar-visible">
       <div className="space-y-4 p-4">
         {messages.map((message, index) => (
           <Message key={index} message={message} />

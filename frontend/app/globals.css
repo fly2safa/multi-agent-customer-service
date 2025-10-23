@@ -76,6 +76,8 @@
 }
 
 /* Custom scrollbar styling */
+
+/* Chrome, Edge, Safari (Webkit browsers) */
 .scrollbar-visible::-webkit-scrollbar {
   width: 12px;
 }
@@ -94,7 +96,7 @@
   background: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* Firefox scrollbar */
+/* Firefox */
 .scrollbar-visible {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--muted-foreground) / 0.3) hsl(var(--muted));
