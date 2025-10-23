@@ -20,13 +20,13 @@ class AgentOrchestrator:
     """
     Orchestrator for the multi-agent customer service system.
     
-    Uses OpenAI GPT-4 for reliable, accurate routing decisions
+    Uses AWS Bedrock (Claude 3.5 Haiku or Nova) for fast, cost-effective routing decisions
     and coordinates between three specialized worker agents.
     """
     
     def __init__(self):
         """Initialize the orchestrator and worker agents."""
-        # LLM for routing decisions (OpenAI GPT-4 - reliable routing)
+        # LLM for routing decisions (AWS Bedrock - cost-effective routing)
         self.routing_llm = get_orchestrator_llm()
         
         # Initialize specialized worker agents

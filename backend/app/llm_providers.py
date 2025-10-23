@@ -96,18 +96,16 @@ class LLMProviders:
         )
     
     @classmethod
-    def get_orchestrator_llm(cls) -> ChatOpenAI:
+    def get_orchestrator_llm(cls) -> ChatBedrock:
         """
         Get LLM specifically configured for the orchestrator.
-        Uses OpenAI GPT-4 for reliable, accurate routing.
+        Uses AWS Bedrock (Claude 3.5 Haiku or Nova) for fast, cost-effective routing.
         
         Returns:
-            ChatOpenAI instance optimized for routing decisions
+            ChatBedrock instance optimized for routing decisions
         """
-        return cls.get_openai_llm(
-            model="gpt-4",
+        return cls.get_bedrock_llm(
             temperature=0.1,  # Very low temperature for consistent routing
-            streaming=False,  # No streaming needed for routing
             max_tokens=50     # Very short responses for routing decisions
         )
     
@@ -145,7 +143,7 @@ def get_bedrock_llm(**kwargs) -> ChatBedrock:
     return LLMProviders.get_bedrock_llm(**kwargs)
 
 
-def get_orchestrator_llm() -> ChatOpenAI:
+def get_orchestrator_llm() -> ChatBedrock:
     """Convenience function to get orchestrator LLM."""
     return LLMProviders.get_orchestrator_llm()
 

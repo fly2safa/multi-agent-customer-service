@@ -433,9 +433,10 @@ agent-proj2/
 
 ## Architecture Highlights
 
-### Multi-Agent System
-- **Orchestrator**: Uses Bedrock Claude 3.5 Haiku for fast, cost-effective routing
-- **Worker Agents**: Use OpenAI GPT-4 for high-quality responses
+### Multi-Provider LLM Strategy
+- **Orchestrator**: Uses AWS Bedrock (Claude 3.5 Haiku or Nova Lite) for fast, cost-effective routing
+- **Worker Agents**: Use OpenAI GPT-4 for high-quality, detailed responses
+- **Strategic Benefit**: Optimizes cost by using cheaper model for simple routing while maintaining quality for customer-facing responses
 
 ### Retrieval Strategies
 1. **Billing Agent** - Hybrid RAG/CAG
