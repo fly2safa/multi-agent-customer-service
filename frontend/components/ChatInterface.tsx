@@ -21,7 +21,7 @@ export function ChatInterface() {
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between px-4">
           <div>
             <h1 className="text-xl font-bold">Multi-Agent Customer Service</h1>
