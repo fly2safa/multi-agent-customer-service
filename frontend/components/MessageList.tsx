@@ -5,7 +5,6 @@
 import { useEffect, useRef } from 'react';
 import { ChatMessage as ChatMessageType } from '@/lib/api';
 import { Message } from './Message';
-import { ScrollArea } from './ui/scroll-area';
 
 interface MessageListProps {
   messages: ChatMessageType[];
@@ -13,12 +12,11 @@ interface MessageListProps {
 
 export function MessageList({ messages }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   if (messages.length === 0) {
@@ -43,13 +41,14 @@ export function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <ScrollArea className="flex-1">
-      <div ref={scrollRef} className="space-y-4 p-4">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+      <div className="space-y-4 p-4">
         {messages.map((message, index) => (
           <Message key={index} message={message} />
         ))}
+        <div ref={endOfMessagesRef} />
       </div>
-    </ScrollArea>
+    </div>
   );
 }
 
