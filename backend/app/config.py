@@ -32,7 +32,7 @@ class Settings:
     
     # LLM Models
     OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4")
-    BEDROCK_MODEL: str = os.getenv("BEDROCK_MODEL", "anthropic.claude-3-5-haiku-20241022-v1:0")
+    BEDROCK_MODEL: str = os.getenv("BEDROCK_MODEL", "amazon.nova-lite-v1:0")
     
     # Retrieval
     TOP_K_RESULTS: int = int(os.getenv("TOP_K_RESULTS", "5"))
