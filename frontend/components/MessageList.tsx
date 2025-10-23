@@ -41,7 +41,7 @@ export function MessageList({ messages }: MessageListProps) {
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-visible">
       <div className="space-y-4 p-4">
         {messages.map((message, index) => (
           <Message key={index} message={message} />
