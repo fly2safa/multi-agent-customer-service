@@ -76,10 +76,24 @@ export function useChat(options: UseChatOptions = {}) {
       try {
         // Stream the response
         let fullResponse = '';
+        let currentAgent = '';
 
         for await (const chunk of streamMessage(content, sessionId)) {
           if (chunk.type === 'session' && chunk.session_id) {
             setSessionId(chunk.session_id);
+          } else if (chunk.type === 'agent' && chunk.agent) {
+            // Capture the agent name
+            currentAgent = chunk.agent;
+            
+            // Update the AI message with the agent name
+            setMessages((prev) => {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                ...updated[updated.length - 1],
+                agent: currentAgent,
+              };
+              return updated;
+            });
           } else if (chunk.type === 'chunk' && chunk.content) {
             fullResponse += chunk.content;
             
@@ -89,6 +103,7 @@ export function useChat(options: UseChatOptions = {}) {
               updated[updated.length - 1] = {
                 ...updated[updated.length - 1],
                 content: fullResponse,
+                agent: currentAgent,
               };
               return updated;
             });

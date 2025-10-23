@@ -8,6 +8,7 @@ export interface ChatMessage {
   role: 'human' | 'ai' | 'system';
   content: string;
   timestamp?: string;
+  agent?: string;
 }
 
 export interface ChatResponse {
@@ -20,11 +21,13 @@ export interface ChatResponse {
 }
 
 export interface StreamChunk {
-  type: 'session' | 'chunk' | 'done' | 'error';
+  type: 'session' | 'chunk' | 'done' | 'error' | 'agent';
   content?: string;
   session_id?: string;
   error?: string;
   message?: string;
+  agent?: string;
+  confidence?: number;
 }
 
 /**
