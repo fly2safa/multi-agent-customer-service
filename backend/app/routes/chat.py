@@ -45,6 +45,13 @@ class ErrorResponse(BaseModel):
 # Global session manager
 session_manager = SessionManager()
 
+# Agent name mapping
+AGENT_NAME_MAP = {
+    "billing": "Billing Support",
+    "technical": "Technical Support",
+    "policy": "Policy & Compliance"
+}
+
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -79,6 +86,28 @@ async def chat(request: ChatRequest):
                 try:
                     # Send session info first
                     yield f"data: {json.dumps({'type': 'session', 'session_id': request.session_id})}\n\n"
+                    
+                    # Get agent metadata first
+                    from app.graph.orchestrator import get_orchestrator
+                    from app.graph.state import create_initial_state
+                    
+                    # Create initial state to get routing decision
+                    state = create_initial_state(
+                        query=request.message,
+                        session_id=request.session_id
+                    )
+                    orchestrator = get_orchestrator()
+                    state = orchestrator.route_query(state)
+                    
+                    # Send agent metadata (convert to friendly name)
+                    agent_key = state["selected_agent"]
+                    agent_name = AGENT_NAME_MAP.get(agent_key, agent_key)
+                    agent_data = {
+                        "type": "agent",
+                        "agent": agent_name,
+                        "confidence": state.get("routing_history", [{}])[-1].get("confidence", 0)
+                    }
+                    yield f"data: {json.dumps(agent_data)}\n\n"
                     
                     # Stream the response
                     full_response = ""
@@ -136,9 +165,12 @@ async def chat(request: ChatRequest):
             session_manager.add_message(request.session_id, "human", request.message)
             session_manager.add_message(request.session_id, "ai", result["response"])
             
+            # Map agent name to friendly name
+            agent_name = AGENT_NAME_MAP.get(result["agent"], result["agent"])
+            
             return ChatResponse(
                 response=result["response"],
-                agent=result["agent"],
+                agent=agent_name,
                 strategy=result["strategy"],
                 session_id=request.session_id,
                 processing_time=result["processing_time"],
