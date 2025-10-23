@@ -51,9 +51,12 @@ Available agents:
 2. TECHNICAL - Handles technical support, troubleshooting, account setup, API issues, authentication, webhooks
 3. POLICY - Handles questions about terms of service, privacy policy, GDPR, data retention, compliance, legal matters
 
+IMPORTANT: Route based ONLY on the current query below. Ignore any previous conversation context.
+Each query should be routed independently based on its topic.
+
 Analyze the query and respond with ONLY the agent name (billing, technical, or policy) in lowercase.
-If the query is ambiguous, choose the most likely agent based on keywords and context."""),
-            ("human", "Query: {query}\n\nWhich agent should handle this? Respond with only: billing, technical, or policy")
+If the query is ambiguous, choose the most likely agent based on keywords in the current query."""),
+            ("human", "Current Query: {query}\n\nWhich agent should handle this specific query? Respond with only: billing, technical, or policy")
         ])
     
     def route_query(self, state: AgentState) -> AgentState:
