@@ -78,10 +78,17 @@ If the query is ambiguous, choose the most likely agent based on keywords in the
             # Get routing decision
             routing_decision = chain.invoke({"query": query}).strip().lower()
             
+            # DEBUG LOGGING
+            print(f"[ROUTING DEBUG] Query: '{query}'")
+            print(f"[ROUTING DEBUG] Raw LLM response: '{routing_decision}'")
+            
             # Validate routing decision
             if routing_decision not in ["billing", "technical", "policy"]:
                 # Default to technical if unclear
+                print(f"[ROUTING DEBUG] Invalid response, defaulting to technical")
                 routing_decision = "technical"
+            else:
+                print(f"[ROUTING DEBUG] Valid response: {routing_decision}")
             
             # Update state
             state["selected_agent"] = routing_decision
@@ -98,6 +105,10 @@ If the query is ambiguous, choose the most likely agent based on keywords in the
         
         except Exception as e:
             # Fallback routing on error
+            print(f"[ROUTING ERROR] Exception occurred: {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
             state["selected_agent"] = "technical"
             state["error"] = f"Routing error: {str(e)}"
             
