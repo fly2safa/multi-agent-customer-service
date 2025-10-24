@@ -16,57 +16,28 @@ A sophisticated customer service application powered by a multi-agent AI system.
 ### System Flow Diagram
 
 ```mermaid
-flowchart TB
-    subgraph Frontend["Frontend - Next.js"]
-        User[User]
-        UI[Chat Interface]
-    end
+graph LR
+    A[User Query] --> B[Frontend UI]
+    B --> C[FastAPI Backend]
+    C --> D{Orchestrator<br/>AWS Bedrock}
+    D -->|Billing| E[Billing Agent<br/>Hybrid RAG/CAG]
+    D -->|Technical| F[Technical Agent<br/>Pure RAG]
+    D -->|Policy| G[Policy Agent<br/>Pure CAG]
+    E --> H[OpenAI GPT-4]
+    F --> H
+    G --> H
+    H --> I[Streaming Response]
+    I --> A
     
-    subgraph Backend["Backend - FastAPI"]
-        API[/api/chat Endpoint]
-        Router[Query Router<br/>AWS Bedrock Claude 3.5]
-        
-        B1[Billing Agent<br/>First Query: RAG]
-        B2[Billing Agent<br/>Cached: CAG]
-        T[Technical Agent<br/>Pure RAG]
-        P[Policy Agent<br/>Pure CAG]
-    end
+    E -.-> J[(ChromaDB<br/>Billing)]
+    F -.-> K[(ChromaDB<br/>Technical)]
+    G -.-> L[(ChromaDB<br/>Policy)]
     
-    subgraph VectorDB["ChromaDB Vector Store"]
-        VDB1[(Billing Docs)]
-        VDB2[(Technical Docs)]
-        VDB3[(Policy Docs)]
-    end
-    
-    User -->|Query| UI
-    UI -->|HTTP POST| API
-    API -->|Route Query| Router
-    
-    Router -->|Billing| B1
-    Router -->|Technical| T
-    Router -->|Policy| P
-    
-    B1 -.->|Retrieve| VDB1
-    B1 -.->|Cache| B2
-    T -.->|Retrieve| VDB2
-    P -.->|Pre-loaded| VDB3
-    
-    B1 -->|OpenAI GPT-4| API
-    B2 -->|OpenAI GPT-4| API
-    T -->|OpenAI GPT-4| API
-    P -->|OpenAI GPT-4| API
-    
-    API -->|SSE Stream| UI
-    UI -->|Display| User
-    
-    style Router fill:#FFE5B4,stroke:#FF8C00,stroke-width:3px
-    style B1 fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style B2 fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style T fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style P fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style VDB1 fill:#F0F0F0,stroke:#666,stroke-width:2px
-    style VDB2 fill:#F0F0F0,stroke:#666,stroke-width:2px
-    style VDB3 fill:#F0F0F0,stroke:#666,stroke-width:2px
+    style D fill:#FFE5B4,stroke:#FF8C00,stroke-width:3px
+    style E fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style F fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style G fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style H fill:#90EE90,stroke:#228B22,stroke-width:2px
 ```
 
 **Key Architecture Highlights:**
