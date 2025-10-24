@@ -65,10 +65,13 @@ cp env.example .env
 # - OPENAI_API_KEY
 # - AWS_ACCESS_KEY_ID
 # - AWS_SECRET_ACCESS_KEY
+# - AWS_SESSION_TOKEN (Required for AWS Academy/Learner Lab)
 # - AWS_REGION
 ```
 
-**Important:** Keep the virtual environment activated for all subsequent backend commands!
+**Important Notes:**
+- **AWS Academy Users**: You MUST include `AWS_SESSION_TOKEN` in your `.env` file. These credentials expire every few hours, so you'll need to refresh them from AWS Academy → AWS Details → AWS CLI.
+- Keep the virtual environment activated for all subsequent backend commands!
 
 ### 3. Frontend Setup
 
@@ -370,9 +373,15 @@ Watch the streaming responses and observe which agent handles each query!
 OPENAI_API_KEY=your-openai-api-key
 AWS_ACCESS_KEY_ID=your-aws-access-key
 AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_SESSION_TOKEN=your-aws-session-token  # Required for AWS Academy/Learner Lab
 AWS_REGION=us-east-1
 CHROMA_PERSIST_DIR=./chroma_db
 ```
+
+**Note for AWS Academy Users**: 
+- AWS Academy provides **temporary credentials** that expire every few hours
+- You must include all three: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
+- To refresh: Go to AWS Academy → Your Course → AWS Details → AWS CLI: Show → Copy all three values
 
 ### Frontend (.env.local)
 
@@ -471,6 +480,27 @@ python ingest_data.py
 **LLM Provider errors:**
 ```bash
 python test_llm_setup.py  # Verify credentials
+```
+
+**AWS Bedrock "ExpiredTokenException" error:**
+This happens when AWS Academy credentials expire (every few hours).
+```bash
+# 1. Go to AWS Academy → Your Course → AWS Details → AWS CLI: Show
+# 2. Copy the three values: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+# 3. Update backend/.env with all three values
+# 4. Restart backend server
+```
+
+**Routing to wrong agent (always Technical Support):**
+- Check if you have multiple backend servers running
+- Stop all Python processes and restart:
+```powershell
+# Windows PowerShell
+Get-Process python | Where-Object {$_.Path -like "*agent-proj2*"} | Stop-Process -Force
+# Then restart backend
+cd backend
+. .\venv\Scripts\Activate.ps1
+python -m app.main
 ```
 
 **Port already in use:**
