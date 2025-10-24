@@ -33,11 +33,11 @@ graph LR
     F -.-> K[(ChromaDB<br/>Technical)]
     G -.-> L[(ChromaDB<br/>Policy)]
     
-    style D fill:#FFE5B4,stroke:#FF8C00,stroke-width:3px
-    style E fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style F fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style G fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
-    style H fill:#90EE90,stroke:#228B22,stroke-width:2px
+    style D fill:#FFA500,stroke:#FF6B00,stroke-width:3px,color:#000
+    style E fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
+    style F fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
+    style G fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
+    style H fill:#28A745,stroke:#1E7B34,stroke-width:2px,color:#FFF
 ```
 
 **Key Architecture Highlights:**
