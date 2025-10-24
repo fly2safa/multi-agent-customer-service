@@ -16,63 +16,45 @@ A sophisticated customer service application powered by a multi-agent AI system.
 ### System Flow Diagram
 
 ```mermaid
-graph TB
-    subgraph "Frontend (Next.js)"
-        User[👤 User]
+flowchart TB
+    subgraph Frontend["Frontend - Next.js"]
+        User[User]
         UI[Chat Interface]
     end
     
-    subgraph "Backend (FastAPI)"
+    subgraph Backend["Backend - FastAPI"]
         API[/api/chat Endpoint]
+        Router[Query Router<br/>AWS Bedrock Claude 3.5]
         
-        subgraph "LangGraph Orchestrator"
-            Router[Query Router<br/>AWS Bedrock Claude 3.5 Haiku<br/>💰 Cost-Effective]
-        end
-        
-        subgraph "Specialized Agents (OpenAI GPT-4)"
-            subgraph "Billing Agent"
-                B1[First Query:<br/>RAG Retrieval]
-                B2[Subsequent:<br/>CAG Cached]
-                B1 -.Cache.-> B2
-            end
-            
-            subgraph "Technical Agent"
-                T[Pure RAG<br/>Always Retrieves]
-            end
-            
-            subgraph "Policy Agent"
-                P[Pure CAG<br/>Pre-loaded Docs]
-            end
-        end
-        
-        subgraph "ChromaDB (Vector Store)"
-            VDB1[(Billing Docs)]
-            VDB2[(Technical Docs)]
-            VDB3[(Policy Docs)]
-        end
+        B1[Billing Agent<br/>First Query: RAG]
+        B2[Billing Agent<br/>Cached: CAG]
+        T[Technical Agent<br/>Pure RAG]
+        P[Policy Agent<br/>Pure CAG]
+    end
+    
+    subgraph VectorDB["ChromaDB Vector Store"]
+        VDB1[(Billing Docs)]
+        VDB2[(Technical Docs)]
+        VDB3[(Policy Docs)]
     end
     
     User -->|Query| UI
     UI -->|HTTP POST| API
-    API -->|1. Route Query| Router
+    API -->|Route Query| Router
     
-    Router -->|billing| B1
-    Router -->|technical| T
-    Router -->|policy| P
+    Router -->|Billing| B1
+    Router -->|Technical| T
+    Router -->|Policy| P
     
     B1 -.->|Retrieve| VDB1
+    B1 -.->|Cache| B2
     T -.->|Retrieve| VDB2
     P -.->|Pre-loaded| VDB3
     
-    B1 -->|2. Generate<br/>OpenAI GPT-4| Response1[Response]
-    B2 -->|2. Generate<br/>OpenAI GPT-4| Response2[Response]
-    T -->|2. Generate<br/>OpenAI GPT-4| Response3[Response]
-    P -->|2. Generate<br/>OpenAI GPT-4| Response4[Response]
-    
-    Response1 -->|Stream| API
-    Response2 -->|Stream| API
-    Response3 -->|Stream| API
-    Response4 -->|Stream| API
+    B1 -->|OpenAI GPT-4| API
+    B2 -->|OpenAI GPT-4| API
+    T -->|OpenAI GPT-4| API
+    P -->|OpenAI GPT-4| API
     
     API -->|SSE Stream| UI
     UI -->|Display| User
