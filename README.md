@@ -13,6 +13,93 @@ A sophisticated customer service application powered by a multi-agent AI system.
 - **Vector Database**: ChromaDB
 - **LLM Providers**: OpenAI GPT-4, AWS Bedrock Claude 3.5
 
+### System Flow Diagram
+
+```mermaid
+graph TB
+    subgraph "Frontend (Next.js)"
+        User[👤 User]
+        UI[Chat Interface]
+    end
+    
+    subgraph "Backend (FastAPI)"
+        API[/api/chat Endpoint]
+        
+        subgraph "LangGraph Orchestrator"
+            Router[Query Router<br/>AWS Bedrock Claude 3.5 Haiku<br/>💰 Cost-Effective]
+        end
+        
+        subgraph "Specialized Agents (OpenAI GPT-4)"
+            subgraph "Billing Agent"
+                B1[First Query:<br/>RAG Retrieval]
+                B2[Subsequent:<br/>CAG Cached]
+                B1 -.Cache.-> B2
+            end
+            
+            subgraph "Technical Agent"
+                T[Pure RAG<br/>Always Retrieves]
+            end
+            
+            subgraph "Policy Agent"
+                P[Pure CAG<br/>Pre-loaded Docs]
+            end
+        end
+        
+        subgraph "ChromaDB (Vector Store)"
+            VDB1[(Billing Docs)]
+            VDB2[(Technical Docs)]
+            VDB3[(Policy Docs)]
+        end
+    end
+    
+    User -->|Query| UI
+    UI -->|HTTP POST| API
+    API -->|1. Route Query| Router
+    
+    Router -->|billing| B1
+    Router -->|technical| T
+    Router -->|policy| P
+    
+    B1 -.->|Retrieve| VDB1
+    T -.->|Retrieve| VDB2
+    P -.->|Pre-loaded| VDB3
+    
+    B1 -->|2. Generate<br/>OpenAI GPT-4| Response1[Response]
+    B2 -->|2. Generate<br/>OpenAI GPT-4| Response2[Response]
+    T -->|2. Generate<br/>OpenAI GPT-4| Response3[Response]
+    P -->|2. Generate<br/>OpenAI GPT-4| Response4[Response]
+    
+    Response1 -->|Stream| API
+    Response2 -->|Stream| API
+    Response3 -->|Stream| API
+    Response4 -->|Stream| API
+    
+    API -->|SSE Stream| UI
+    UI -->|Display| User
+    
+    style Router fill:#FFE5B4,stroke:#FF8C00,stroke-width:3px
+    style B1 fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style B2 fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style T fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style P fill:#E6F3FF,stroke:#4A90E2,stroke-width:2px
+    style VDB1 fill:#F0F0F0,stroke:#666,stroke-width:2px
+    style VDB2 fill:#F0F0F0,stroke:#666,stroke-width:2px
+    style VDB3 fill:#F0F0F0,stroke:#666,stroke-width:2px
+```
+
+**Key Architecture Highlights:**
+
+1. **Multi-Provider LLM Strategy**:
+   - 🔀 **Routing**: AWS Bedrock (Claude 3.5 Haiku) - Fast & cost-effective (~$0.0001/query)
+   - 🎯 **Response Generation**: OpenAI GPT-4 - High-quality answers (~$0.03/query)
+
+2. **Three Retrieval Strategies**:
+   - **Pure RAG** (Technical): Every query retrieves fresh context from vector store
+   - **Pure CAG** (Policy): All documents pre-loaded in memory, instant responses
+   - **Hybrid RAG/CAG** (Billing): First query uses RAG, subsequent queries use cached context
+
+3. **Streaming Architecture**: Server-Sent Events (SSE) for real-time token-by-token response delivery
+
 ## Features
 
 - 🤖 Multi-agent system with intelligent query routing
@@ -410,62 +497,12 @@ See `EXAMPLE_QUERIES.md` for a comprehensive list of test queries for each agent
 - "Do you comply with GDPR?"
 - "What are the terms of service?"
 
-## Project Structure
-
-```
-agent-proj2/
-├── backend/
-│   ├── app/
-│   │   ├── agents/          # Specialized AI agents
-│   │   ├── graph/           # LangGraph orchestrator
-│   │   ├── routes/          # API endpoints
-│   │   ├── config.py        # Configuration
-│   │   └── main.py          # FastAPI app
-│   ├── ingest_data.py       # Data ingestion script
-│   └── requirements.txt
-├── frontend/
-│   ├── app/                 # Next.js app directory
-│   ├── components/          # React components
-│   ├── lib/                 # Utilities
-│   └── hooks/               # Custom hooks
-├── data/
-│   └── mock_documents/      # Knowledge base documents
-└── README.md
-```
-
 ## Technology Stack
 
 - **Backend**: FastAPI, LangChain, LangGraph, ChromaDB
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS, shadcn/ui
 - **AI/LLM**: OpenAI GPT-4, AWS Bedrock Claude 3.5
 - **Database**: ChromaDB (vector database)
-
-## Architecture Highlights
-
-### Multi-Provider LLM Strategy
-- **Orchestrator**: Uses AWS Bedrock (Claude 3.5 Haiku or Nova Lite) for fast, cost-effective routing
-- **Worker Agents**: Use OpenAI GPT-4 for high-quality, detailed responses
-- **Strategic Benefit**: Optimizes cost by using cheaper model for simple routing while maintaining quality for customer-facing responses
-
-### Retrieval Strategies
-1. **Billing Agent** - Hybrid RAG/CAG
-   - First query: RAG retrieval from ChromaDB
-   - Subsequent queries: Uses cached context (CAG) for speed
-   
-2. **Technical Agent** - Pure RAG
-   - Every query performs fresh vector similarity search
-   - Best for dynamic, frequently updated content
-   
-3. **Policy Agent** - Pure CAG
-   - All documents loaded in memory at startup
-   - Instant responses with no retrieval overhead
-
-### Key Features
-- **Streaming Responses**: Real-time SSE streaming for better UX
-- **Session Management**: Maintains conversation context
-- **Intelligent Routing**: LLM-powered query classification
-- **Source Citations**: Technical agent provides document sources
-- **Error Handling**: Graceful fallbacks and retry mechanisms
 
 ## Troubleshooting
 
