@@ -2,7 +2,7 @@
  * MessageInput Component - User input for chat messages
  */
 
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Send, Loader2 } from 'lucide-react';
@@ -14,11 +14,25 @@ interface MessageInputProps {
 
 export function MessageInput({ onSend, disabled }: MessageInputProps) {
   const [input, setInput] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus input when component mounts
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  // Auto-focus input when it becomes enabled (after response completes)
+  useEffect(() => {
+    if (!disabled) {
+      inputRef.current?.focus();
+    }
+  }, [disabled]);
 
   const handleSend = () => {
     if (input.trim() && !disabled) {
       onSend(input);
       setInput('');
+      // Focus will happen automatically via useEffect when disabled changes
     }
   };
 
@@ -33,6 +47,7 @@ export function MessageInput({ onSend, disabled }: MessageInputProps) {
     <div className="border-t bg-background p-4">
       <div className="flex gap-2 max-w-4xl mx-auto">
         <Input
+          ref={inputRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
