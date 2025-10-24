@@ -158,10 +158,33 @@ This script will:
 
 ### Step-by-Step Testing Guide
 
+**Prerequisites for ALL tests:**
+- Backend virtual environment must be activated
+- Navigate to `backend/` directory
+- `.env` file configured with API keys
+
+**Activate Virtual Environment:**
+```powershell
+# Windows PowerShell
+cd backend
+.\venv\Scripts\Activate.ps1
+```
+```bash
+# macOS/Linux
+cd backend
+source venv/bin/activate
+```
+
+You should see `(venv)` at the beginning of your terminal prompt.
+
+---
+
 #### Test 1: Verify LLM Configuration
 
+**Platform:** Windows, macOS, Linux  
+**Requires:** Virtual environment activated
+
 ```bash
-# In backend/ directory with venv activated
 python test_llm_setup.py
 ```
 
@@ -179,8 +202,10 @@ python test_llm_setup.py
 
 #### Test 2: Test Individual Agents
 
+**Platform:** Windows, macOS, Linux  
+**Requires:** Virtual environment activated (see above)
+
 ```bash
-# In backend/ directory with venv activated
 python test_agents.py
 ```
 
@@ -196,8 +221,10 @@ python test_agents.py
 
 #### Test 3: Test Orchestrator Routing
 
+**Platform:** Windows, macOS, Linux  
+**Requires:** Virtual environment activated (see above)
+
 ```bash
-# In backend/ directory with venv activated
 python test_orchestrator.py
 ```
 
@@ -213,33 +240,43 @@ python test_orchestrator.py
 
 #### Test 4: Start Backend Server
 
+**Platform:** Windows, macOS, Linux  
+**Requires:** Virtual environment activated (see above)  
+**Terminal:** Keep this terminal running!
+
 ```bash
-# In backend/ directory with venv activated
 python -m app.main
 ```
 
 **Expected Output:**
 ```
-INFO:     Started server process
+Policy Agent: Loaded 48 policy documents into memory
+INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000
 ```
 
-**Keep this terminal running!**
+**⚠️ IMPORTANT: Keep this terminal running! Do not close it.**
 
 ---
 
 #### Test 5: Test API Endpoints
 
-Open a **new terminal**, activate the virtual environment again, and run:
+**Terminal:** Open a NEW terminal (backend server must still be running in first terminal)  
+**Requires:** Virtual environment activated in NEW terminal
+
+```powershell
+# Windows PowerShell - NEW TERMINAL
+cd backend
+.\venv\Scripts\Activate.ps1
+python test_api.py
+```
 
 ```bash
-# New terminal
+# macOS/Linux - NEW TERMINAL
 cd backend
-venv\Scripts\activate  # Windows
-# or: source venv/bin/activate  # macOS/Linux
-
+source venv/bin/activate
 python test_api.py
 ```
 
@@ -256,18 +293,22 @@ python test_api.py
 
 #### Test 6: Start Frontend
 
-Open another **new terminal**:
+**Terminal:** Open another NEW terminal (3rd terminal total)  
+**Requires:** Node.js/npm (NO virtual environment needed)
+
+```powershell
+# Windows PowerShell - NEW TERMINAL
+cd frontend
+npm install                # First time only
+cp env.example .env.local  # First time only
+npm run dev
+```
 
 ```bash
+# macOS/Linux - NEW TERMINAL
 cd frontend
-
-# Install dependencies (first time only)
-npm install
-
-# Create environment file
-cp env.example .env.local
-
-# Start development server
+npm install                # First time only
+cp env.example .env.local  # First time only
 npm run dev
 ```
 
@@ -314,12 +355,12 @@ npm run dev
 
 ## Quick Testing Commands Summary
 
-```bash
+### Windows PowerShell
+```powershell
 # Terminal 1 - Backend Setup & Testing
 cd backend
 python -m venv venv
-venv\Scripts\activate  # Windows
-# or: source venv/bin/activate  # macOS/Linux
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 cp env.example .env  # Edit with your API keys
 python ingest_data.py
@@ -330,7 +371,7 @@ python -m app.main  # Keep running
 
 # Terminal 2 - API Testing (optional)
 cd backend
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 python test_api.py
 
 # Terminal 3 - Frontend
@@ -339,8 +380,35 @@ npm install
 cp env.example .env.local
 npm run dev
 
-# Browser
-# Open http://localhost:3000
+# Browser: Open http://localhost:3000
+```
+
+### macOS/Linux
+```bash
+# Terminal 1 - Backend Setup & Testing
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp env.example .env  # Edit with your API keys
+python ingest_data.py
+python test_llm_setup.py
+python test_agents.py
+python test_orchestrator.py
+python -m app.main  # Keep running
+
+# Terminal 2 - API Testing (optional)
+cd backend
+source venv/bin/activate
+python test_api.py
+
+# Terminal 3 - Frontend
+cd frontend
+npm install
+cp env.example .env.local
+npm run dev
+
+# Browser: Open http://localhost:3000
 ```
 
 **📖 For detailed step-by-step testing instructions with expected outputs, see [TESTING_GUIDE.md](TESTING_GUIDE.md)**
@@ -349,10 +417,19 @@ npm run dev
 
 ### Start Backend Server
 
-```bash
-cd backend
+**Requires:** Virtual environment activated
 
-# Make sure virtual environment is activated
+```powershell
+# Windows PowerShell
+cd backend
+.\venv\Scripts\Activate.ps1
+python -m app.main
+```
+
+```bash
+# macOS/Linux
+cd backend
+source venv/bin/activate
 python -m app.main
 ```
 
@@ -368,21 +445,35 @@ The API will be available at `http://localhost:8000`
 - `POST /api/chat/test` - Test routing without executing
 
 **Test the API:**
-```bash
-# In another terminal
+```powershell
+# Windows PowerShell - New terminal
 cd backend
+.\venv\Scripts\Activate.ps1
+python test_api.py
+```
+
+```bash
+# macOS/Linux - New terminal
+cd backend
+source venv/bin/activate
 python test_api.py
 ```
 
 ### Start Frontend Development Server
 
-```bash
+**Requires:** Node.js/npm (NO virtual environment needed)
+
+```powershell
+# Windows PowerShell
 cd frontend
+cp env.example .env.local  # First time only
+npm run dev
+```
 
-# Create .env.local from example
-cp env.example .env.local
-
-# Start development server
+```bash
+# macOS/Linux
+cd frontend
+cp env.example .env.local  # First time only
 npm run dev
 ```
 
@@ -392,10 +483,29 @@ The application will be available at `http://localhost:3000`
 
 ### End-to-End Test
 
-1. **Start Backend**: `cd backend && python -m app.main`
-2. **Start Frontend**: `cd frontend && npm run dev`
-3. **Open Browser**: Navigate to `http://localhost:3000`
-4. **Test Queries**: Try example queries from `EXAMPLE_QUERIES.md`
+**Terminal 1 - Backend** (with venv activated):
+```powershell
+# Windows
+cd backend
+.\venv\Scripts\Activate.ps1
+python -m app.main
+```
+```bash
+# macOS/Linux
+cd backend
+source venv/bin/activate
+python -m app.main
+```
+
+**Terminal 2 - Frontend** (NO venv needed):
+```bash
+cd frontend
+npm run dev
+```
+
+**Browser**:
+1. Navigate to `http://localhost:3000`
+2. Try example queries from `EXAMPLE_QUERIES.md`
 
 ### Verify Each Agent
 
