@@ -16,7 +16,7 @@ A sophisticated customer service application powered by a multi-agent AI system.
 ### System Flow Diagram
 
 ```mermaid
-graph LR
+graph TB
     A[User Query] --> B[Frontend UI]
     B --> C[FastAPI Backend]
     C --> D{Orchestrator<br/>AWS Bedrock}
