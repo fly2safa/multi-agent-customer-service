@@ -19,7 +19,7 @@ A sophisticated customer service application powered by a multi-agent AI system.
 graph TB
     A[User Query] --> B[Frontend UI]
     B --> C[FastAPI Backend]
-    C --> D{Orchestrator<br/>AWS Bedrock}
+    C --> D{Supervisor/Orchestrator<br/>AWS Bedrock}
     D -->|Billing| E[Billing Agent<br/>Hybrid RAG/CAG]
     D -->|Technical| F[Technical Agent<br/>Pure RAG]
     D -->|Policy| G[Policy Agent<br/>Pure CAG]
@@ -33,8 +33,8 @@ graph TB
     F <-.-> J
     G <-.-> J
     
-    J --- K[billing_docs]
     J --- L[technical_docs]
+    J --- K[billing_docs]
     J --- M[policy_docs]
     
     style D fill:#FFA500,stroke:#FF6B00,stroke-width:3px,color:#000
