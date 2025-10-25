@@ -34,9 +34,11 @@ graph TB
         M
     end
     
-    E --> H[OpenAI GPT-4]
-    F --> H
-    G --> H
+    E --> N[ ]
+    F --> H[OpenAI GPT-4]
+    G --> O[ ]
+    N --> H
+    O --> H
     H --> I[Streaming Response]
     I --> A
     
@@ -49,6 +51,8 @@ graph TB
     style K fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
     style L fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
     style M fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
+    style N fill:none,stroke:none
+    style O fill:none,stroke:none
 ```
 
 **Key Architecture Highlights:**
