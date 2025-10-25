@@ -23,11 +23,6 @@ graph TB
     D -->|Billing| E[Billing Agent<br/>Hybrid RAG/CAG]
     D -->|Technical| F[Technical Agent<br/>Pure RAG]
     D -->|Policy| G[Policy Agent<br/>Pure CAG]
-    E --> H[OpenAI GPT-4]
-    F --> H
-    G --> H
-    H --> I[Streaming Response]
-    I --> A
     
     E <-.-> K[(billing_docs)]
     F <-.-> L[(technical_docs)]
@@ -38,6 +33,12 @@ graph TB
         L
         M
     end
+    
+    E --> H[OpenAI GPT-4]
+    F --> H
+    G --> H
+    H --> I[Streaming Response]
+    I --> A
     
     style D fill:#FFA500,stroke:#FF6B00,stroke-width:3px,color:#000
     style E fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
