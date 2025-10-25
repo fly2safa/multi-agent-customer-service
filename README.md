@@ -28,7 +28,7 @@ graph TB
     F <-.-> L[(technical_docs)]
     G <-.-> M[(policy_docs)]
     
-    subgraph ChromaDB[" ChromaDB Vector Store "]
+    subgraph ChromaDB[" ChromaDB Vector Database "]
         K
         L
         M
@@ -67,6 +67,79 @@ graph TB
    - **Hybrid RAG/CAG** (Billing): First query uses RAG, subsequent queries use cached context
 
 3. **Streaming Architecture**: Server-Sent Events (SSE) for real-time token-by-token response delivery
+
+---
+
+### Frontend Architecture Diagram
+
+```mermaid
+graph TB
+    A[User Browser] --> B[page.tsx<br/>Next.js App Router]
+    B --> C[ChatInterface.tsx<br/>Main Container]
+    
+    C --> D[MessageList.tsx<br/>Display Messages]
+    C --> E[MessageInput.tsx<br/>User Input]
+    
+    C --> F[useChat Hook<br/>State Management]
+    
+    F --> G[messages state]
+    F --> H[isLoading state]
+    F --> I[error state]
+    F --> J[sessionId state]
+    
+    F --> K[sendMessage]
+    F --> L[clearChat]
+    F --> M[retry]
+    
+    K --> N[api.ts<br/>streamMessage]
+    N --> O[FastAPI Backend<br/>:8000/api/chat]
+    
+    O --> P[Server-Sent Events<br/>SSE Stream]
+    P --> N
+    N --> F
+    
+    F --> Q[sessionStorage<br/>Persistence]
+    Q -.-> R[chat_messages]
+    Q -.-> S[chat_session_id]
+    
+    D --> T[Message.tsx<br/>Individual Message]
+    T --> U[Agent Badge<br/>Billing/Tech/Policy]
+    T --> V[Streaming Text<br/>Token-by-token]
+    
+    style B fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+    style C fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+    style D fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+    style E fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+    style F fill:#FF6B6B,stroke:#C92A2A,stroke-width:3px,color:#FFF
+    style N fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
+    style O fill:#28A745,stroke:#1E7B34,stroke-width:2px,color:#FFF
+    style Q fill:#FFA500,stroke:#FF6B00,stroke-width:2px,color:#000
+    style T fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+```
+
+**Frontend Architecture Highlights:**
+
+1. **Component Structure**:
+   - **Next.js App Router**: Modern React 18+ with server components
+   - **Modular Components**: ChatInterface → MessageList + MessageInput
+   - **Reusable UI**: shadcn/ui components (Button, Card, Input, ScrollArea)
+
+2. **State Management**:
+   - **useChat Hook**: Custom hook managing all chat state and logic
+   - **Real-time Updates**: Streaming responses update state token-by-token
+   - **Session Persistence**: sessionStorage preserves chat across page refreshes
+
+3. **API Communication**:
+   - **Streaming API**: Server-Sent Events (SSE) for live responses
+   - **Type Safety**: Full TypeScript with defined interfaces
+   - **Error Handling**: Retry mechanism with error state management
+
+4. **UX Enhancements**:
+   - **Auto-focus**: Input field automatically focuses after each response
+   - **Agent Badges**: Visual indicators showing which agent responded
+   - **Smooth Scrolling**: Auto-scroll to latest message
+
+---
 
 ## Features
 
