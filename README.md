@@ -29,15 +29,23 @@ graph LR
     H --> I[Streaming Response]
     I --> A
     
-    E -.-> J[(ChromaDB<br/>Billing)]
-    F -.-> K[(ChromaDB<br/>Technical)]
-    G -.-> L[(ChromaDB<br/>Policy)]
+    E <-.-> J[(ChromaDB)]
+    F <-.-> J
+    G <-.-> J
+    
+    J --- K[billing_docs]
+    J --- L[technical_docs]
+    J --- M[policy_docs]
     
     style D fill:#FFA500,stroke:#FF6B00,stroke-width:3px,color:#000
     style E fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
     style F fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
     style G fill:#4A90E2,stroke:#2E5C8A,stroke-width:2px,color:#FFF
     style H fill:#28A745,stroke:#1E7B34,stroke-width:2px,color:#FFF
+    style J fill:#9B59B6,stroke:#7D3C98,stroke-width:3px,color:#FFF
+    style K fill:#E8DAEF,stroke:#9B59B6,stroke-width:1px,color:#000
+    style L fill:#E8DAEF,stroke:#9B59B6,stroke-width:1px,color:#000
+    style M fill:#E8DAEF,stroke:#9B59B6,stroke-width:1px,color:#000
 ```
 
 **Key Architecture Highlights:**
