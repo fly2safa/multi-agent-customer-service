@@ -33,8 +33,8 @@ graph TB
     F <-.-> J
     G <-.-> J
     
-    J --- L[technical_docs]
     J --- K[billing_docs]
+    J --- L[technical_docs]
     J --- M[policy_docs]
     
     style D fill:#FFA500,stroke:#FF6B00,stroke-width:3px,color:#000
