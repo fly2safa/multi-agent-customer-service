@@ -93,9 +93,12 @@ graph TB
     
     F --> D
     
+    D --> T[Message.tsx<br/>Individual Message]
+    T --> U[Agent Badge<br/>Billing/Tech/Policy]
+    T --> V[Streaming Text<br/>Token-by-token]
+    
     K --> N[api.ts<br/>streamMessage]
     N --> O[FastAPI Backend<br/>:8000/api/chat]
-    
     O --> P[Server-Sent Events<br/>SSE Stream]
     P --> N
     N --> F
@@ -103,10 +106,6 @@ graph TB
     F --> Q[sessionStorage<br/>Persistence]
     Q -.-> R[chat_messages]
     Q -.-> S[chat_session_id]
-    
-    D --> T[Message.tsx<br/>Individual Message]
-    T --> U[Agent Badge<br/>Billing/Tech/Policy]
-    T --> V[Streaming Text<br/>Token-by-token]
     
     style B fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
     style C fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
