@@ -139,6 +139,113 @@ graph TB
    - **Agent Badges**: Visual indicators showing which agent responded
    - **Smooth Scrolling**: Auto-scroll to latest message
 
+### Frontend Flow Explained in Simple Terms
+
+#### **The Journey of Your Message** 🚀
+
+**1. You Type a Message**
+```
+User Browser → page.tsx → ChatInterface.tsx → MessageInput.tsx
+```
+- You're on a webpage (User Browser)
+- The page is built with Next.js (`page.tsx`)
+- The main chat window (`ChatInterface.tsx`) contains everything
+- You type in the input box (`MessageInput.tsx`)
+
+**2. Behind the Scenes: The useChat Hook (The Brain 🧠)**
+
+Think of `useChat` as the **control center** that manages everything:
+
+**It keeps track of:**
+- `messages` - All your chat messages (yours + AI responses)
+- `isLoading` - "Is the AI currently typing?"
+- `error` - "Did something go wrong?"
+- `sessionId` - "Which conversation am I in?"
+
+**It has buttons you can press:**
+- `sendMessage` - Send your message to the AI
+- `clearChat` - Start a new conversation
+- `retry` - Try again if something failed
+
+**3. Sending Your Message to the Backend**
+```
+sendMessage → api.ts → FastAPI Backend (port 8000)
+```
+
+When you hit "Send":
+1. `sendMessage` function gets triggered
+2. It calls `api.ts` which has the `streamMessage` function
+3. This talks to your FastAPI Backend server (running on your computer at port 8000)
+
+**4. The Response Comes Back (Streaming Magic ✨)**
+```
+Backend → Server-Sent Events (SSE) → api.ts → useChat Hook
+```
+
+Instead of waiting for the whole answer:
+- **SSE (Server-Sent Events)** = Like a live video stream, but for text
+- Words appear **one-by-one** as the AI generates them
+- Each new word updates the `messages` state
+- You see it typing in real-time!
+
+**5. Showing You the Messages**
+```
+useChat Hook → MessageList.tsx → Message.tsx
+```
+
+- `MessageList.tsx` displays all the messages in order
+- Each individual message is shown by `Message.tsx`
+- It shows:
+  - **Agent Badge** (which AI agent answered: Billing, Technical, or Policy)
+  - **Streaming Text** (the actual answer appearing word by word)
+
+**6. Saving Your Conversation (Persistence 💾)**
+```
+useChat Hook → sessionStorage
+```
+
+Your chat is automatically saved in the browser:
+- `chat_messages` - All your messages
+- `chat_session_id` - Your conversation ID
+
+**Why?** If you accidentally refresh the page, your conversation is still there! 🎉
+
+#### The Complete Loop
+
+```
+YOU type → MessageInput
+         ↓
+     useChat Hook (brain) sends message
+         ↓
+     api.ts talks to Backend
+         ↓
+     Backend processes (AI agents work)
+         ↓
+     Response streams back via SSE
+         ↓
+     useChat Hook updates messages
+         ↓
+     MessageList shows new message
+         ↓
+     YOU see the response!
+```
+
+#### Real Example
+
+**You type:** "What are your pricing plans?"
+
+1. ✅ `MessageInput` captures your text
+2. ✅ `useChat.sendMessage()` is called
+3. ✅ `api.ts` sends it to backend
+4. ✅ Backend routes to **Billing Agent** (sees "pricing")
+5. ✅ Response **streams back** word-by-word via SSE
+6. ✅ `useChat` updates `messages` state continuously
+7. ✅ `MessageList` shows the response appearing in real-time
+8. ✅ You see: "We offer three pricing plans..." appearing live!
+9. ✅ Everything is saved to `sessionStorage`
+
+The frontend is essentially a sophisticated messenger that makes talking to AI agents feel smooth and natural. 💬✨
+
 ---
 
 ## Features
