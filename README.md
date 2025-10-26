@@ -91,6 +91,8 @@ graph TB
     F --> L[clearChat]
     F --> M[retry]
     
+    F --> D
+    
     K --> N[api.ts<br/>streamMessage]
     N --> O[FastAPI Backend<br/>:8000/api/chat]
     
