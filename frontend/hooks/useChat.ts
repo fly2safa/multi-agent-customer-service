@@ -4,10 +4,28 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { streamMessage, ChatMessage } from '@/lib/api';
+import audioManager, { AgentType } from '@/lib/audioManager';
 
 export interface UseChatOptions {
   sessionId?: string;
   onError?: (error: Error) => void;
+}
+
+/**
+ * Map agent name from backend to AgentType for audio
+ */
+function mapAgentNameToType(agentName: string): AgentType | null {
+  const normalized = agentName.toLowerCase();
+  
+  if (normalized.includes('billing')) {
+    return 'billing';
+  } else if (normalized.includes('technical')) {
+    return 'technical';
+  } else if (normalized.includes('policy')) {
+    return 'policy';
+  }
+  
+  return null;
 }
 
 export function useChat(options: UseChatOptions = {}) {
@@ -96,6 +114,14 @@ export function useChat(options: UseChatOptions = {}) {
             });
           } else if (chunk.type === 'chunk' && chunk.content) {
             fullResponse += chunk.content;
+            
+            // Play typing sound for the current agent
+            if (currentAgent) {
+              const agentType = mapAgentNameToType(currentAgent);
+              if (agentType) {
+                audioManager.playSound(agentType);
+              }
+            }
             
             // Update the last message (AI response)
             setMessages((prev) => {
