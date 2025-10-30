@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { Volume2, VolumeX, Volume1 } from 'lucide-react';
 
@@ -22,7 +22,9 @@ export function VolumeControl({
   onToggleMute,
 }: VolumeControlProps) {
   const [showSlider, setShowSlider] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const [isInteracting, setIsInteracting] = useState(false);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const getVolumeIcon = () => {
     if (muted || volume === 0) {
@@ -34,44 +36,53 @@ export function VolumeControl({
     }
   };
 
+  const clearCloseTimeout = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
   const handleMouseEnter = () => {
+    clearCloseTimeout();
+    setIsHovering(true);
     setShowSlider(true);
   };
 
   const handleMouseLeave = () => {
-    // Only close if not actively interacting with slider
+    setIsHovering(false);
+    // Only close if not actively dragging
     if (!isInteracting) {
-      setShowSlider(false);
+      clearCloseTimeout();
+      // Longer delay to give user time to come back
+      closeTimeoutRef.current = setTimeout(() => {
+        setShowSlider(false);
+      }, 500);
     }
   };
 
   const handleSliderMouseDown = () => {
+    clearCloseTimeout();
     setIsInteracting(true);
   };
 
   const handleSliderMouseUp = () => {
     setIsInteracting(false);
+    // If not hovering, close after delay
+    if (!isHovering) {
+      clearCloseTimeout();
+      closeTimeoutRef.current = setTimeout(() => {
+        setShowSlider(false);
+      }, 500);
+    }
   };
 
-  // Global mouseup listener to close slider when user releases mouse
+  // Cleanup on unmount
   useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      if (isInteracting) {
-        setIsInteracting(false);
-        // Small delay before closing to allow final hover check
-        setTimeout(() => {
-          setShowSlider(false);
-        }, 300);
-      }
+    return () => {
+      clearCloseTimeout();
     };
-
-    if (isInteracting) {
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-      return () => {
-        document.removeEventListener('mouseup', handleGlobalMouseUp);
-      };
-    }
-  }, [isInteracting]);
+  }, []);
 
   return (
     <div 
@@ -93,7 +104,7 @@ export function VolumeControl({
       {showSlider && (
         <div 
           className="absolute right-0 top-full mt-1 bg-background border rounded-lg shadow-lg p-3 min-w-[200px] z-50"
-          onMouseEnter={() => setShowSlider(true)}
+          onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <div className="flex items-center gap-3">
