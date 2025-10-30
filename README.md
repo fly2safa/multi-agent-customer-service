@@ -249,6 +249,55 @@ The frontend is essentially a sophisticated messenger that makes talking to AI a
 
 ---
 
+### Typing Sound Effects 🔊
+
+The application features **immersive typing sound effects** that play during AI agent responses, enhancing the user experience with audio feedback.
+
+#### Key Features:
+
+1. **Agent-Specific Sounds**
+   - 🏦 **Billing Agent** - Custom typing sound
+   - 🔧 **Technical Agent** - Custom typing sound
+   - 📋 **Policy Agent** - Custom typing sound
+   - Each agent has its own distinct sound for audio differentiation
+
+2. **Volume Control**
+   - Adjustable volume slider (0-100%)
+   - Appears on hover over the volume button
+   - Real-time volume adjustment
+   - Settings persist across sessions (localStorage)
+
+3. **Mute/Unmute Toggle**
+   - Quick mute button in the header
+   - Visual icons indicate sound state:
+     - 🔊 Volume2 - High volume (50-100%)
+     - 🔉 Volume1 - Low volume (1-49%)
+     - 🔇 VolumeX - Muted or 0%
+
+4. **Smart Playback**
+   - Rate limiting prevents audio spam (50ms minimum interval)
+   - Plays once per streaming chunk for smooth sound
+   - Graceful degradation if sound files not available
+   - Uses Web Audio API for optimal performance
+
+#### Adding Sound Files:
+
+Sound files are optional. To enable typing sounds:
+
+1. Navigate to `frontend/public/sounds/`
+2. Add three MP3 or WAV files:
+   - `billing-typing.mp3`
+   - `technical-typing.mp3`
+   - `policy-typing.mp3`
+3. See `frontend/public/sounds/README.md` for:
+   - Free sound resources (Freesound.org, Zapsplat, Mixkit)
+   - Sound specifications (50-150ms, < 50KB)
+   - Setup instructions
+
+**Without sound files:** The application works perfectly - the sound controls simply won't appear.
+
+---
+
 ## Features
 
 - 🤖 Multi-agent system with intelligent query routing
@@ -256,6 +305,7 @@ The frontend is essentially a sophisticated messenger that makes talking to AI a
 - 📚 Multiple retrieval strategies (RAG, CAG, Hybrid)
 - 🔄 Stateful conversation management
 - 🎨 Modern, responsive UI
+- 🔊 **Typing sound effects** - Different keyboard sounds for each agent with volume control
 
 ## Prerequisites
 
