@@ -4,7 +4,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Volume2, VolumeX, Volume1 } from 'lucide-react';
 
@@ -22,6 +22,7 @@ export function VolumeControl({
   onToggleMute,
 }: VolumeControlProps) {
   const [showSlider, setShowSlider] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
 
   const getVolumeIcon = () => {
     if (muted || volume === 0) {
@@ -33,11 +34,50 @@ export function VolumeControl({
     }
   };
 
+  const handleMouseEnter = () => {
+    setShowSlider(true);
+  };
+
+  const handleMouseLeave = () => {
+    // Only close if not actively interacting with slider
+    if (!isInteracting) {
+      setShowSlider(false);
+    }
+  };
+
+  const handleSliderMouseDown = () => {
+    setIsInteracting(true);
+  };
+
+  const handleSliderMouseUp = () => {
+    setIsInteracting(false);
+  };
+
+  // Global mouseup listener to close slider when user releases mouse
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isInteracting) {
+        setIsInteracting(false);
+        // Small delay before closing to allow final hover check
+        setTimeout(() => {
+          setShowSlider(false);
+        }, 300);
+      }
+    };
+
+    if (isInteracting) {
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+      return () => {
+        document.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [isInteracting]);
+
   return (
     <div 
       className="relative"
-      onMouseEnter={() => setShowSlider(true)}
-      onMouseLeave={() => setShowSlider(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Volume Button */}
       <Button
@@ -51,7 +91,11 @@ export function VolumeControl({
 
       {/* Volume Slider - Appears on Hover */}
       {showSlider && (
-        <div className="absolute right-0 top-full mt-1 bg-background border rounded-lg shadow-lg p-3 min-w-[200px] z-50">
+        <div 
+          className="absolute right-0 top-full mt-1 bg-background border rounded-lg shadow-lg p-3 min-w-[200px] z-50"
+          onMouseEnter={() => setShowSlider(true)}
+          onMouseLeave={handleMouseLeave}
+        >
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground whitespace-nowrap">
               Volume
@@ -61,6 +105,8 @@ export function VolumeControl({
               min="0"
               max="100"
               value={muted ? 0 : volume}
+              onMouseDown={handleSliderMouseDown}
+              onMouseUp={handleSliderMouseUp}
               onChange={(e) => {
                 const newVolume = parseInt(e.target.value, 10);
                 onVolumeChange(newVolume);
