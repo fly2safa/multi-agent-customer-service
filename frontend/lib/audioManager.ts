@@ -21,6 +21,7 @@ class AudioManager {
   };
   private lastPlayTime = 0;
   private isInitialized = false;
+  private currentSource: AudioBufferSourceNode | null = null; // Track current playing sound
 
   /**
    * Initialize the audio manager (must be called after user interaction)
@@ -92,6 +93,9 @@ class AudioManager {
     }
 
     try {
+      // Stop previous sound if still playing
+      this.stopCurrentSound();
+
       // Create source and gain nodes
       const source = this.audioContext.createBufferSource();
       const gainNode = this.audioContext.createGain();
@@ -105,11 +109,42 @@ class AudioManager {
       source.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
       
+      // Track this source
+      this.currentSource = source;
+      
+      // Clear reference when sound finishes naturally
+      source.onended = () => {
+        if (this.currentSource === source) {
+          this.currentSource = null;
+        }
+      };
+      
       // Play the sound
       source.start(0);
     } catch (error) {
       console.warn('Failed to play sound:', error);
     }
+  }
+
+  /**
+   * Stop currently playing sound
+   */
+  private stopCurrentSound(): void {
+    if (this.currentSource) {
+      try {
+        this.currentSource.stop();
+      } catch (error) {
+        // Sound already stopped, ignore error
+      }
+      this.currentSource = null;
+    }
+  }
+
+  /**
+   * Stop all sounds (public method for external use)
+   */
+  stopAllSounds(): void {
+    this.stopCurrentSound();
   }
 
   /**
@@ -159,6 +194,7 @@ class AudioManager {
    * Clean up resources
    */
   cleanup(): void {
+    this.stopCurrentSound();
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;

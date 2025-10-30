@@ -8,6 +8,7 @@ import audioManager, { AgentType } from '@/lib/audioManager';
 
 export interface TypingSoundControls {
   playSound: (agent: AgentType) => void;
+  stopSounds: () => void;
   volume: number;
   setVolume: (volume: number) => void;
   muted: boolean;
@@ -47,6 +48,13 @@ export function useTypingSound(): TypingSoundControls {
    */
   const playSound = useCallback((agent: AgentType) => {
     audioManager.playSound(agent);
+  }, []);
+
+  /**
+   * Stop all currently playing sounds
+   */
+  const stopSounds = useCallback(() => {
+    audioManager.stopAllSounds();
   }, []);
 
   /**
@@ -96,6 +104,7 @@ export function useTypingSound(): TypingSoundControls {
 
   return {
     playSound,
+    stopSounds,
     volume,
     setVolume,
     muted,

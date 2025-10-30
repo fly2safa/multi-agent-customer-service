@@ -145,6 +145,8 @@ export function useChat(options: UseChatOptions = {}) {
         // Remove the placeholder AI message on error
         setMessages((prev) => prev.slice(0, -1));
       } finally {
+        // Stop all typing sounds when streaming completes
+        audioManager.stopAllSounds();
         setIsLoading(false);
       }
     },
