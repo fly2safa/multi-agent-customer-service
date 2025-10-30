@@ -5,11 +5,12 @@
 'use client';
 
 import { useChat } from '@/hooks/useChat';
+import { useTypingSound } from '@/hooks/useTypingSound';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { Trash2, AlertCircle } from 'lucide-react';
+import { Trash2, AlertCircle, Volume2, VolumeX } from 'lucide-react';
 
 export function ChatInterface() {
   const { messages, isLoading, error, sendMessage, clearChat, retry } = useChat({
@@ -17,6 +18,8 @@ export function ChatInterface() {
       console.error('Chat error:', err);
     },
   });
+
+  const { muted, toggleMute, isReady } = useTypingSound();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -29,17 +32,35 @@ export function ChatInterface() {
               Powered by AI • {messages.length > 0 ? `${messages.length / 2} messages` : 'Start a conversation'}
             </p>
           </div>
-          {messages.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={clearChat}
-              disabled={isLoading}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Clear Chat
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {/* Sound Control Button */}
+            {isReady && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleMute}
+                title={muted ? 'Unmute typing sounds' : 'Mute typing sounds'}
+              >
+                {muted ? (
+                  <VolumeX className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+            {/* Clear Chat Button */}
+            {messages.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearChat}
+                disabled={isLoading}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear Chat
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
