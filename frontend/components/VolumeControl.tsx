@@ -96,6 +96,7 @@ export function VolumeControl({
         size="sm"
         onClick={onToggleMute}
         title={muted ? 'Unmute typing sounds' : 'Mute typing sounds'}
+        className="text-white hover:bg-white/10"
       >
         {getVolumeIcon()}
       </Button>

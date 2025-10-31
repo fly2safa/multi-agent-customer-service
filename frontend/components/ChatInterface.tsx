@@ -25,11 +25,11 @@ export function ChatInterface() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Header - Fixed at top */}
-      <header className="flex-shrink-0 border-b bg-background z-10">
+      <header className="flex-shrink-0 border-b bg-gradient-to-r from-blue-600 to-indigo-600 z-10 shadow-md">
         <div className="container flex h-16 items-center justify-between px-4">
           <div>
-            <h1 className="text-xl font-bold">Multi-Agent Customer Service</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-xl font-bold text-white">Multi-Agent Customer Service</h1>
+            <p className="text-sm text-blue-100">
               Powered by AI • {messages.length > 0 ? `${messages.length / 2} messages` : 'Start a conversation'}
             </p>
           </div>
@@ -50,6 +50,7 @@ export function ChatInterface() {
                 size="sm"
                 onClick={clearChat}
                 disabled={isLoading}
+                className="bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-white/50"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Clear Chat

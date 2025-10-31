@@ -53,12 +53,13 @@ export function MessageInput({ onSend, disabled }: MessageInputProps) {
           onKeyPress={handleKeyPress}
           placeholder="Type your message here..."
           disabled={disabled}
-          className="flex-1"
+          className="flex-1 border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/30 focus:shadow-lg focus:shadow-blue-500/20 transition-all duration-200 text-blue-900 font-semibold placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-blue-500 dark:text-blue-300"
         />
         <Button
           onClick={handleSend}
           disabled={disabled || !input.trim()}
           size="icon"
+          className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
         >
           {disabled ? (
             <Loader2 className="h-4 w-4 animate-spin" />
