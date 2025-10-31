@@ -725,6 +725,167 @@ npm run dev
 
 The application will be available at `http://localhost:3000`
 
+---
+
+## 🐳 Docker Deployment (Alternative Setup)
+
+### Prerequisites for Docker
+
+- Docker Desktop installed (Windows/macOS) or Docker Engine (Linux)
+- Docker Compose v2.0+
+- API keys configured (see below)
+
+### Quick Start with Docker
+
+**1. Clone and Configure Environment**
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd agent-proj2
+
+# Copy and configure backend environment
+cp backend/env.example backend/.env
+# Edit backend/.env with your API keys
+
+# Copy frontend environment (optional - default works)
+cp frontend/env.example frontend/.env.local
+```
+
+**2. Build and Run with Docker Compose**
+
+```bash
+# Build images and start services
+docker-compose up --build
+
+# Or run in detached mode (background)
+docker-compose up -d --build
+```
+
+**3. Access the Application**
+
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- Health Check: http://localhost:8000/health
+
+**4. Stop the Application**
+
+```bash
+# Stop services
+docker-compose down
+
+# Stop and remove volumes (includes ChromaDB data)
+docker-compose down -v
+```
+
+### Docker Commands
+
+**View Logs:**
+```bash
+# All services
+docker-compose logs -f
+
+# Backend only
+docker-compose logs -f backend
+
+# Frontend only
+docker-compose logs -f frontend
+```
+
+**Rebuild After Code Changes:**
+```bash
+docker-compose up --build
+```
+
+**Check Service Status:**
+```bash
+docker-compose ps
+```
+
+**Execute Commands in Container:**
+```bash
+# Backend: Ingest data into ChromaDB
+docker-compose exec backend python ingest_data.py
+
+# Backend: Run tests
+docker-compose exec backend python test_agents.py
+
+# Access backend shell
+docker-compose exec backend /bin/bash
+```
+
+### Docker Architecture
+
+**Services:**
+- **backend**: FastAPI application with ChromaDB
+  - Port: 8000
+  - Volume: `chroma_data` for persistent vector database
+  - Health checks enabled
+
+- **frontend**: Next.js application
+  - Port: 3000
+  - Depends on backend health
+  - Connects via internal network
+
+**Volumes:**
+- `chroma_data`: Persists ChromaDB data across container restarts
+
+**Network:**
+- `app-network`: Internal bridge network for service communication
+
+### Environment Variables for Docker
+
+Create a `.env` file in the **project root** with:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_SESSION_TOKEN=your-aws-session-token
+AWS_REGION=us-east-1
+```
+
+**Or** use the existing `backend/.env` file (docker-compose will read from it).
+
+### Benefits of Docker Deployment
+
+✅ **One Command Setup** - No manual Python/Node installation  
+✅ **Consistent Environment** - Works on any OS  
+✅ **Easy Scaling** - Ready for production deployment  
+✅ **Isolated Dependencies** - No conflicts with system packages  
+✅ **Persistent Data** - ChromaDB data survives container restarts  
+✅ **Easy Cleanup** - Remove everything with one command  
+
+### Troubleshooting Docker
+
+**Issue: Backend not starting**
+```bash
+# Check backend logs
+docker-compose logs backend
+
+# Common fix: Environment variables
+# Make sure backend/.env has all required API keys
+```
+
+**Issue: Frontend can't connect to backend**
+```bash
+# Check if backend is healthy
+docker-compose ps
+# Backend should show "healthy" status
+
+# Check network connectivity
+docker-compose exec frontend ping backend
+```
+
+**Issue: ChromaDB data lost**
+```bash
+# Make sure you're not using -v flag when stopping
+docker-compose down  # Keeps data
+# NOT: docker-compose down -v  # Deletes data
+```
+
+---
+
 ## Testing the Complete System
 
 ### End-to-End Test
