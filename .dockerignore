@@ -1,0 +1,67 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+TESTING_GUIDE.md
+VERIFICATION_CHECKLIST.md
+RUBRIC_COMPLIANCE_REPORT.md
+EXAMPLE_QUERIES.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.pem
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# ChromaDB (will be mounted as volume)
+backend/chroma_db/
+
+# Build artifacts
+backend/build/
+backend/dist/
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage/
+
