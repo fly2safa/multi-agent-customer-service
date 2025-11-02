@@ -11,15 +11,16 @@ A sophisticated customer service application powered by a multi-agent AI system.
 
 ---
 
-## Architecture
+## Technology Architecture
 
-- **Backend**: FastAPI with LangGraph orchestration
+- **Backend**: Python with FastAPI
+- **AI/LLM Framework**: LangChain & LangGraph for agent orchestration
 - **AI Agents**: Orchestrator (Supervisor) + 3 specialized agent workers
-  - Billing Support (Hybrid RAG/CAG)
-  - Technical Support (Pure RAG)
-  - Policy & Compliance (Pure CAG)
+  - Billing Support (Hybrid RAG/CAG [Retrieval-Augmented Generation/Cached-Augmented Generation])
+  - Technical Support (Pure RAG [Retrieval-Augmented Generation])
+  - Policy & Compliance (Pure CAG [Cached-Augmented Generation]])
 - **Frontend**: Next.js with shadcn/ui
-- **Vector Database**: ChromaDB
+- **Vector Database**: ChromaDB (local persistence)
 - **LLM Providers**: OpenAI GPT-4, AWS Bedrock Claude 3.5
 
 ### System Flow Diagram
@@ -800,6 +801,7 @@ docker-compose down -v
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - Health Check: http://localhost:8000/health
+- API Documentation: http://localhost:8000/docs
 
 ### Additional Docker Commands
 
