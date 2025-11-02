@@ -1,11 +1,20 @@
-# Multi-Agent Customer Service AI
+<h1 style="color: #2E86AB;">Multi-Agent Customer Service AI</h1>
 
 A sophisticated customer service application powered by a multi-agent AI system. This project demonstrates a modern, scalable architecture for handling diverse customer inquiries by routing them to specialized AI agents.
+
+---
+
+**Developer**: Safa M.  
+**Course**: ASU **AI Vibe Coding**  
+**Project**: agentic-customer-project (Advanced Customer Service AI) application  
+**Completion Date**: November 02, 2025
+
+---
 
 ## Architecture
 
 - **Backend**: FastAPI with LangGraph orchestration
-- **AI Agents**: Orchestrator + 3 specialized workers
+- **AI Agents**: Orchestrator (Supervisor) + 3 specialized agent workers
   - Billing Support (Hybrid RAG/CAG)
   - Technical Support (Pure RAG)
   - Policy & Compliance (Pure CAG)
@@ -727,7 +736,7 @@ The application will be available at `http://localhost:3000`
 
 ---
 
-## 🐳 Docker Deployment (Alternative Setup)
+## <span style="color: #0DB7ED; font-weight: bold;">🐳 Docker Deployment (Alternative Setup)</span>
 
 ### Prerequisites for Docker
 
@@ -762,35 +771,37 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
+**View Logs (while containers are running):**
+```bash
+# View logs for all services (live updates)
+docker-compose logs -f
+
+# View backend logs only
+docker-compose logs -f backend
+
+# View frontend logs only
+docker-compose logs -f frontend
+
+# View last 50 lines of logs
+docker-compose logs --tail=50
+```
+
+**Stop the Containers:**
+```bash
+# Stop services (keeps data)
+docker-compose down
+
+# Stop and remove volumes (deletes ChromaDB data)
+docker-compose down -v
+```
+
 **3. Access the Application**
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - Health Check: http://localhost:8000/health
 
-**4. Stop the Application**
-
-```bash
-# Stop services
-docker-compose down
-
-# Stop and remove volumes (includes ChromaDB data)
-docker-compose down -v
-```
-
-### Docker Commands
-
-**View Logs:**
-```bash
-# All services
-docker-compose logs -f
-
-# Backend only
-docker-compose logs -f backend
-
-# Frontend only
-docker-compose logs -f frontend
-```
+### Additional Docker Commands
 
 **Rebuild After Code Changes:**
 ```bash
