@@ -26,6 +26,7 @@ A sophisticated customer service application powered by a multi-agent AI system.
 ### System Flow Diagram
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#fff','primaryTextColor':'#000','primaryBorderColor':'#000','lineColor':'#2c3e50','edgeLabelBackground':'#fff','tertiaryColor':'#fff'}}}%%
 graph TB
     A[User Query] --> B[Frontend UI]
     B --> C[FastAPI Backend]
@@ -44,11 +45,9 @@ graph TB
         M
     end
     
-    E --> N[ ]
-    F --> H[OpenAI GPT-4]
-    G --> O[ ]
-    N --> H
-    O --> H
+    E --> H[OpenAI GPT-4]
+    F --> H
+    G --> H
     H --> I[Streaming Response]
     I --> A
     
@@ -61,8 +60,8 @@ graph TB
     style K fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
     style L fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
     style M fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#FFF
-    style N fill:none,stroke:none
-    style O fill:none,stroke:none
+    
+    linkStyle default stroke:#2c3e50,stroke-width:2.5px
 ```
 
 **Key Architecture Highlights:**
@@ -83,6 +82,7 @@ graph TB
 ### Frontend Architecture Diagram
 
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#fff','primaryTextColor':'#000','primaryBorderColor':'#000','lineColor':'#2c3e50','edgeLabelBackground':'#fff','tertiaryColor':'#fff'}}}%%
 graph TB
     A[User Browser] --> B[page.tsx<br/>Next.js App Router]
     B --> C[ChatInterface.tsx<br/>Main Container]
@@ -126,6 +126,8 @@ graph TB
     style O fill:#28A745,stroke:#1E7B34,stroke-width:2px,color:#FFF
     style Q fill:#FFA500,stroke:#FF6B00,stroke-width:2px,color:#000
     style T fill:#61DAFB,stroke:#20232A,stroke-width:2px,color:#000
+    
+    linkStyle default stroke:#2c3e50,stroke-width:2.5px
 ```
 
 **Frontend Architecture Highlights:**
@@ -177,6 +179,12 @@ Think of `useChat` as the **control center** that manages everything:
 - `sendMessage` - Send your message to the AI
 - `clearChat` - Start a new conversation
 - `retry` - Try again if something failed
+
+**Audio Controls (for typing sound effects):**
+- 🔊 **Volume Button** - Mute/unmute typing sounds with one click
+- 🎚️ **Volume Slider** - Adjust typing sound volume (0-100%)
+  - Appears when you hover over the volume button
+  - Settings are saved automatically (so your preferences persist)
 
 **3. Sending Your Message to the Backend**
 ```
