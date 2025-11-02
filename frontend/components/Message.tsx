@@ -10,6 +10,25 @@ interface MessageProps {
   message: ChatMessage;
 }
 
+/**
+ * Get color classes for agent name based on agent type
+ */
+function getAgentColor(agentName: string | undefined): string {
+  if (!agentName) return 'text-foreground';
+  
+  const agent = agentName.toLowerCase();
+  
+  if (agent.includes('billing')) {
+    return 'text-emerald-600 dark:text-emerald-400 font-bold';
+  } else if (agent.includes('technical')) {
+    return 'text-orange-600 dark:text-orange-400 font-bold';
+  } else if (agent.includes('policy') || agent.includes('compliance')) {
+    return 'text-purple-600 dark:text-purple-400 font-bold';
+  }
+  
+  return 'text-foreground';
+}
+
 export function Message({ message }: MessageProps) {
   const isUser = message.role === 'human';
 
@@ -39,7 +58,7 @@ export function Message({ message }: MessageProps) {
         <div className="flex items-center gap-2 mb-1">
           <span className={cn(
             "font-semibold text-sm",
-            isUser ? "text-blue-700 dark:text-blue-400" : ""
+            isUser ? "text-blue-700 dark:text-blue-400" : getAgentColor(message.agent)
           )}>
             {isUser ? 'You' : (message.agent || 'AI Assistant')}
           </span>
