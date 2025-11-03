@@ -87,7 +87,7 @@ export function ChatInterface() {
 
       {/* Input - Fixed at bottom */}
       <div className="flex-shrink-0">
-        <MessageInput onSend={sendMessage} disabled={isLoading} />
+        <MessageInput onSend={sendMessage} disabled={isLoading} messages={messages} />
       </div>
     </div>
   );
